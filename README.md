@@ -1,7 +1,7 @@
 # RNAdegrProjR
 
 
-## dadta-raw
+## data-raw
 - DATASET.R: data pre-processing to get gene info table, sample info table, and gene expression normalization
 
 ## analysis
