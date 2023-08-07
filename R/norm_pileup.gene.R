@@ -1,4 +1,4 @@
-#' Read depth normalization from pileupData (for gene 1, all samples)
+#' Read depth normalization from pileupData (for gene 1, all samples).
 #'
 #' @param pileupData a coverage pileup matrix that columns are samples
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
