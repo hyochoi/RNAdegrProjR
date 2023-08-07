@@ -1,7 +1,7 @@
 #' Read depth normalization from pileupPath (for all genes, all samples)
 #'
 #' @param pileupPath file paths of coverage pileup .RData files that columns are samples for each file
-#' @param geneNames file names of pileupData
+#' @param geneNames file names of pileupData for each gene
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a rnum x the number of samples matrix at each gene list.
