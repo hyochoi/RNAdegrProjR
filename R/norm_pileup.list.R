@@ -22,8 +22,7 @@ norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
     pileupList <- list()
     for (g in 1:length(pileupPath)){
       pileupList[[g]] <- list()
-      PD <- miceadds::load.Rdata2(basename(pileupPath[g]), path=dirname(pileupPath[g]))
-      pileupList[[g]] <- PD
+      pileupList[[g]] <- miceadds::load.Rdata2(basename(pileupPath[g]), path=dirname(pileupPath[g]))
     }
     if (method==1 | method==2) {
       # Method 1: Raw value
