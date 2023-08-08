@@ -12,7 +12,7 @@
 norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
 
   if (is.null(geneNames)) {
-    geneNames = paste0("Gene ", c(1:length(pileupPath)))
+    geneNames = paste0("Gene_", c(1:length(pileupPath)))
   }
 
   if(length(pileupPath)!=length(geneNames)) {
