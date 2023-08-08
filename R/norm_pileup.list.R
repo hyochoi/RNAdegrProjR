@@ -1,4 +1,4 @@
-#' Read depth normalization from pileupPath (for all genes, all samples)
+#' Gene length normalization for pileup lists (for all genes, all samples)
 #'
 #' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @param geneNames gene names per file. If NULL, Gene i with the same length of pileupPath be set. Default is NULL.
