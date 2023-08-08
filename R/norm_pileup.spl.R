@@ -1,4 +1,4 @@
-#' Read depth normalization from pileup (for gene 1, sample 1)
+#' Gene length normalization for a single pileup (for gene 1, sample 1)
 #'
 #' @param pileup a coverage pileup vector for one sample
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
