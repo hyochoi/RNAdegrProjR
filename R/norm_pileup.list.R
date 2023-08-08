@@ -1,7 +1,7 @@
 #' Read depth normalization from pileupPath (for all genes, all samples)
 #'
-#' @param pileupPath file paths of coverage pileup .RData files that columns are samples for each file
-#' @param geneNames file names of pileupData for each gene
+#' @param pileupPath file paths of coverage pileupData including .RData file names
+#' @param geneNames gene names per file. If NULL, Gene i with the same length of pileupPath be set. Default is NULL.
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a rnum x the number of samples matrix at each gene list.
@@ -9,20 +9,22 @@
 #' @import SCISSOR miceadds
 #' @export
 
-norm_pileup.list = function(pileupPath, geneNames, rnum=100, method=1) {
+norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
+
+  if (is.null(geneNames)) {
+    geneNames = paste0("Gene ", c(1:length(pileupPath)))
+  }
 
   if(length(pileupPath)!=length(geneNames)) {
     stop("pileupPath must be the same length as geneNames")
-  }
 
-  if(length(pileupPath)==length(geneNames)) {
+  } else if(length(pileupPath)==length(geneNames)) {
     pileupList <- list()
-    for (g in 1:length(geneNames)){
+    for (g in 1:length(pileupPath)){
       pileupList[[g]] <- list()
-      PD <- miceadds::load.Rdata2(paste0(geneNames[g],".RData"), path=pileupPath[g])
+      PD <- miceadds::load.Rdata2(basename(pileupPath[g]), path=dirname(pileupPath[g]))
       pileupList[[g]] <- PD
     }
-
     if (method==1 | method==2) {
       # Method 1: Raw value
       # Method 2: Interpolation
