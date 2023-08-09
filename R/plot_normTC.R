@@ -25,7 +25,6 @@ plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, stat=1) {
 
   # Scale
   colsum <- as.matrix(apply(log.normarray, c(2,3), sum))
-
   scale.log.normarray = 0*(log.normarray)
   for (i in 1:dim(normarray)[1]){
     for (j in 1:dim(normarray)[2]){
