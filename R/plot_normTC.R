@@ -37,18 +37,18 @@ plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, stat=1, p
     stop(stat," is not an option for stat.")
   }
 
-  mt <- c("Method 1: Raw value", "Method 2: Interpolation")
-  st <- c("Median", "Mean")
-  ntcplot <- ggplot2::ggplot(normTC1, aes(x=region, colour=pair, group=sample)) +
-    geom_line(aes(y=normTC1[,4]), alpha=0.4) +
-    scale_colour_brewer(palette="Set1") +
-    theme(legend.position="bottom") +
-    labs(title=mt[method],x="Regions", y=paste0(st[stat]," normalized coverage")) +
-    guides(colour=guide_legend(title="")) +
-    theme(panel.background = element_rect(fill="gray97"))
-
   if (plot) {
+    mt <- c("Method 1: Raw value", "Method 2: Interpolation")
+    st <- c("Median", "Mean")
+    ntcplot <- ggplot2::ggplot(normTC1, aes(x=region, colour=pair, group=sample)) +
+      geom_line(aes(y=normTC1[,4]), alpha=0.4) +
+      scale_colour_brewer(palette="Set1") +
+      theme(legend.position="bottom") +
+      labs(title=mt[method],x="Regions", y=paste0(st[stat]," normalized coverage")) +
+      guides(colour=guide_legend(title="")) +
+      theme(panel.background = element_rect(fill="gray97"))
     print(ntcplot)
   }
+
   return(normTC1)
 }
