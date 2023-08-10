@@ -5,7 +5,7 @@
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @param margin 1, 2, and 3 return metrics per sample, per gene, and across the genes per sample, respectively.
-#' @return metrics including mean, sd, CV (sd/mean), median, mad, and robustCV (mad/median)
+#' @return metrics including mean, sd, CV (sd/mean), median, mad, and robustCV (mad/median) per margin
 #' @references https://github.com/hyochoi/SCISSOR
 #' @import SCISSOR tidyverse
 #' @export
