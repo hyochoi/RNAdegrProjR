@@ -15,11 +15,11 @@ scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, sca
   # Gene length normalization
   normlist = norm_pileup.list(path, genes, rnum=rnum, method=method)
 
-  # Scale after log-transformation
+  # Log-transformation
   log.normlist = lapply(normlist, FUN=function(x) log10(x+1))
-  scale.log.normlist = lapply(log.normlist, FUN=function(x) sweep(x, 2, apply(x,2,sum)+0.01, FUN="/"))
 
   if (is.na(scale) | scale==TRUE) {
+    scale.log.normlist = lapply(log.normlist, FUN=function(x) sweep(x, 2, apply(x,2,sum)+0.01, FUN="/"))
     return(scale.log.normlist)
 
   } else if (scale==FALSE) {
