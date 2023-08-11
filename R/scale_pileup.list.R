@@ -4,12 +4,13 @@
 #' @param geneNames gene names per file. If NULL, Gene i with the same length of pileupPath be set. Default is NULL.
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
-#' @return a scaled array (dimensions are regions, samples, genes) after gene length normalization
+#' @param scale TRUE/FALSE returns the scaled/unscaled normalized transcript coverage. Default is TRUE.
+#' @return an array (dimensions are regions, samples, genes) for the normalized transcript coverage after gene length normalization
 #' @references https://github.com/hyochoi/SCISSOR
 #' @import SCISSOR abind
 #' @export
 
-scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
+scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE) {
 
   # Gene length normalization
   normlist = norm_pileup.list(path, genes, rnum=rnum, method=method)
@@ -27,5 +28,13 @@ scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
     }
   }
 
-  return(scale.log.normarray)
+  if (is.na(scale) | scale==TRUE) {
+    return(scale.log.normarray)
+
+  } else if (scale==FALSE) {
+    return(log.normarray)
+
+  } else {
+    stop(scale," is not an option for scale.")
+  }
 }
