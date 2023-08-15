@@ -12,31 +12,31 @@
 #' @export
 
 plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, stat=1, plot=TRUE) {
-
-  scale.log.normarray = scale_pileup.list(path, genes, rnum=rnum, method=method)
-
-  scale.geomedian <- as.matrix(apply(scale.log.normarray, c(1,2), median))
-  scale.geomean <- as.matrix(apply(scale.log.normarray, c(1,2), mean))
-
+  
+  scale.log.normlist = scale_pileup.list(pileupPath, geneNames, rnum=rnum, method=method, scale=TRUE)
+  
+  scale.geomedian <- as.matrix(apply(simplify2array(scale.log.normlist), 1:2, median))
+  scale.geomean <- as.matrix(apply(simplify2array(scale.log.normlist), 1:2, mean))
+  
   vec.scale.geomedian = convert_pivot.longer(scale.geomedian, c("region", "sample", "scale.geomedian"))
   vec.scale.geomean = convert_pivot.longer(scale.geomean, c("region", "sample", "scale.geomean"))
-
+  
   pair <- substr(vec.scale.geomedian$sample, start=14, stop=16)
   df <- data.frame(pair, vec.scale.geomedian, vec.scale.geomean[,c("scale.geomean")])
   normTC <- convert_Chr2Numcol(df, 2)
-
+  
   if (stat==1) {
     # Stat 1: Median curve per sample
     normTC1 <- normTC[,c("region", "sample", "pair", "scale.geomedian")]
-
+    
   } else if (stat==2) {
     # Stat 2: Mean curve per sample
     normTC1 <- normTC[,c("region", "sample", "pair", "scale.geomean")]
-
+    
   } else {
     stop(stat," is not an option for stat.")
   }
-
+  
   if (plot) {
     mt <- c("Method 1: Raw value", "Method 2: Interpolation")
     st <- c("Median", "Mean")
@@ -49,6 +49,6 @@ plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, stat=1, p
       theme(panel.background = element_rect(fill="gray97"))
     print(ntcplot)
   }
-
+  
   return(normTC1)
 }
