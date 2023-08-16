@@ -4,6 +4,7 @@
 #' @param geneNames gene names per file. If NULL, Gene i with the same length of pileupPath be set. Default is NULL.
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
+#' @param scale TRUE/FALSE returns the scaled/unscaled normalized transcript coverage. Default is TRUE.
 #' @param stat 1 and 2 return median and mean normalized coverage curves per sample, respectively. Default is 1.
 #' @param plot TRUE/FALSE turns on/off the normalized transcript coverage plot. Default is TRUE.
 #' @return a matrix and a plot, or a matrix for the normalized transcript coverage where plot is TRUE or FALSE, respectively.
@@ -11,7 +12,7 @@
 #' @import SCISSOR tidyverse ggplot2
 #' @export
 
-plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, stat=1, plot=TRUE) {
+plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE, stat=1, plot=TRUE) {
   
   scale.log.normlist = scale_pileup.list(pileupPath, geneNames, rnum=rnum, method=method, scale=TRUE)
   
