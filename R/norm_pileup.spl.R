@@ -14,8 +14,8 @@ norm_pileup.spl = function(pileup, rnum=100, method=1) {
   depthmat <- cbind(row, pileup)
   pos2 <- data.frame(round(seq(from=1, to=length(pileup), length.out=(2*rnum+1))))
   row_odd <- seq_len(nrow(pos2)) %% 2
-  pos3 <- pos2[row_odd == 0, ] # even points
-  pos4 <- pos2[row_odd == 1, ] # odd points
+  pos3 <- pos2[row_odd==0, ] # even points
+  pos4 <- pos2[row_odd==1, ] # odd points
   region <- rep(1:rnum)
 
   if (method==1) {
