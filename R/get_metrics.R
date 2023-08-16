@@ -42,7 +42,6 @@ get_metrics = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
     vec.median = convert_pivot.longer(median, c("sample", "gene", "median"))
     vec.mad = convert_pivot.longer(mad, c("sample", "gene", "mad"))
     vec.robustCV = convert_pivot.longer(robustCV, c("sample", "gene", "robustCV"))
-    
     metrics <- data.frame(vec.mean, vec.sd[,c("sd")], vec.CV[,c("CV")], vec.median[,c("median")], vec.mad[,c("mad")], vec.robustCV[,c("robustCV")])
   }
   
