@@ -1,0 +1,103 @@
+entity_submitter_id,file_name,Pilot,Tissue,Preservation,Protocol,Protocal detail,TissueType,ratio_28s_18s,rinvalue
+TCGA-BL-A0C8-01A-11R-A10U-07,49432779-e2b3-4e36-b1a9-88c7c45854ff.rna_seq.genomic.gdc_realn.bam,OG,BLCA,Fresh Frozen,mRNA,mRNA,Primary,3,8.6
+TCGA-BL-A0C8-01A-11R-A277-07,e1e79392-73f2-4a23-961e-19dc6a315b22.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BLCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,3,8.6
+TCGA-BL-A0C8-01B-04R-A277-07,d7094569-100f-4bb1-bd9d-35e0f7485547.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BLCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-BL-A13I-01A-11R-A13Y-07,83b37bd1-fd81-4ebc-a513-449cbd1710e8.rna_seq.genomic.gdc_realn.bam,OG,BLCA,Fresh Frozen,mRNA,mRNA,Primary,2.8,7.1
+TCGA-BL-A13I-01A-11R-A277-07,083c5185-07a4-4d45-a852-aaadfe41dcef.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BLCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,2.8,7.1
+TCGA-BL-A13I-01B-04R-A277-07,6cfd7c30-a9f3-4052-b443-d4a0d4a64088.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BLCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-BL-A13J-01A-11R-A10U-07,829d07d7-8a03-4350-8999-4ffd493f6218.rna_seq.genomic.gdc_realn.bam,OG,BLCA,Fresh Frozen,mRNA,mRNA,Primary,1.8,8.4
+TCGA-BL-A13J-01A-11R-A277-07,7cd8c835-cbce-4aa1-84d0-3ea7d3112630.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BLCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.8,8.4
+TCGA-BL-A13J-01B-04R-A277-07,34f4f7ab-2d66-4e80-a800-023f8279855e.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BLCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-A7-A0DB-01A-11R-A00Z-07,b4aad532-f92b-43d9-820c-f3c98e382225.rna_seq.genomic.gdc_realn.bam,OG,BRCA,Fresh Frozen,mRNA,mRNA,Primary,1.5,7.6
+TCGA-A7-A0DB-01A-11R-A277-07,304b7293-0a76-4028-9a18-58c87c751ceb.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.5,7.6
+TCGA-A7-A0DB-01C-02R-A277-07,9079bad4-9d01-4eb9-999d-35ad734be2e8.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-A7-A13D-01A-13R-A12P-07,d820ac02-a30e-437b-b20a-3e92705b7b81.rna_seq.genomic.gdc_realn.bam,OG,BRCA,Fresh Frozen,mRNA,mRNA,Primary,1.3,7.4
+TCGA-A7-A13D-01A-13R-A277-07,1e742dad-8e44-452a-bf2b-9b8ae1ed8bb2.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.3,7.4
+TCGA-A7-A13D-01B-04R-A277-07,c9f641bc-d9fe-4cd6-8e73-bbf6935aee52.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.2
+TCGA-A7-A13E-01A-11R-A12P-07,5991af25-0b64-43d2-867a-6b9713b17af9.rna_seq.genomic.gdc_realn.bam,OG,BRCA,Fresh Frozen,mRNA,mRNA,Primary,1.8,9.7
+TCGA-A7-A13E-01A-11R-A277-07,d27304e0-1b0b-4fc3-8e0d-af2c305d30f8.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.8,9.7
+TCGA-A7-A13E-01B-06R-A277-07,e843a939-f1a2-4e98-87b5-69abef893a51.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.1
+TCGA-A7-A26E-01A-11R-A169-07,a02fb212-a6cc-40b2-9d31-481fc1ce0911.rna_seq.genomic.gdc_realn.bam,OG,BRCA,Fresh Frozen,mRNA,mRNA,Primary,1.5,8.9
+TCGA-A7-A26E-01A-11R-A277-07,e6bad6ec-c178-4684-99e8-2504781a022b.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.5,8.9
+TCGA-A7-A26E-01B-06R-A277-07,de01516e-43f0-4f96-8ac6-ab543a314829.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.7
+TCGA-A7-A26J-01A-11R-A169-07,df6189e5-bd61-4be2-9d31-efef56cb4739.rna_seq.genomic.gdc_realn.bam,OG,BRCA,Fresh Frozen,mRNA,mRNA,Primary,1.9,9.3
+TCGA-A7-A26J-01A-11R-A277-07,7d787768-efb1-462d-b5aa-5cbf6fc543d4.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.9,9.3
+TCGA-A7-A26J-01B-02R-A277-07,e49fbda2-881a-43c1-9c16-0b07fdd281a7.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,BRCA,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.2
+TCGA-A6-2674-01A-02R-0821-07,5ba3bbfe-f08c-437f-87d3-351b772ced02.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,2.2,7.3
+TCGA-A6-2674-01A-02R-A278-07,cd10f4f7-d92b-4152-8595-332686e4605a.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,2.2,7.3
+TCGA-A6-2674-01B-04R-A277-07,5abd486a-6aed-4dcf-a2a2-2537af6cdd9c.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-A6-2684-01A-01R-1410-07,6bc70f5c-fdba-4bef-865a-793b7782a107.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,0,9.8
+TCGA-A6-2684-01A-01R-A278-07,19645f04-0021-4b2d-ad56-b1342c6ca519.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,0,9.8
+TCGA-A6-2684-01C-08R-A277-07,ba2b0b86-f7f1-47f7-b0fd-bec3f623febb.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.6
+TCGA-A6-3809-01A-01R-1022-07,1e0f16e6-de1c-4d1e-b1f6-5fabbea1591b.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,1.6,9.3
+TCGA-A6-3809-01A-01R-A278-07,b25e7003-40df-4806-baee-eb8ad1c69643.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.6,9.3
+TCGA-A6-3809-01B-04R-A277-07,c22c07cb-8215-47e8-9525-074fda8d7d59.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.5
+TCGA-A6-3810-01A-01R-1022-07,802f1041-19bc-4bec-8452-5e4b19a8100e.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,1.9,8.4
+TCGA-A6-3810-01A-01R-A278-07,c874c481-cff8-4e2d-99b1-3b5aeaaecb8e.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.9,8.4
+TCGA-A6-3810-01B-04R-A277-07,b8135e73-31c3-49af-b4da-a7ed5f28d68a.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-A6-5656-01A-21R-1839-07,544499d8-b5a8-4ed8-ae99-6f7a504530e7.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,1.65,7.7
+TCGA-A6-5656-01A-21R-A278-07,ed8896f8-24ef-43a4-ace6-ed9353bd11c2.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.65,7.7
+TCGA-A6-5656-01B-02R-A277-07,d1447a31-64bb-4e70-ae50-eeff7a605f38.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-A6-5659-01A-01R-1653-07,2b2c2ebc-e83c-442e-88ae-1a2569ac892f.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,1.48,8.7
+TCGA-A6-5659-01A-01R-A278-07,b503bcc9-714d-40aa-8709-3b4577ce8007.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.48,8.7
+TCGA-A6-5659-01B-04R-A277-07,69550f7f-5251-4657-863b-bd35d69c82c4.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2
+TCGA-A6-6650-01A-11R-1774-07,13649cf2-1dc4-408f-9063-31a2b9bb7157.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,1.55,9.4
+TCGA-A6-6650-01A-11R-A278-07,8ca13509-abad-46b7-92f4-fa741bc52b42.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.55,9.4
+TCGA-A6-6650-01B-02R-A277-07,e356598b-7611-492a-98ed-ef2ec1b77b7a.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-A6-6780-01A-11R-1839-07,992ce1bc-46a2-4f57-ac7a-c6368c69c67c.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,2.38,7.7
+TCGA-A6-6780-01A-11R-A278-07,90c9f8cd-4c8c-4f07-af2f-e17db69bd561.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,2.38,7.7
+TCGA-A6-6780-01B-04R-A277-07,b9389390-aa03-406c-957e-2bc264f9468e.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-A6-6781-01A-22R-1928-07,4925248f-21e2-476e-937c-02e0a748c77b.rna_seq.genomic.gdc_realn.bam,OG,COAD,Fresh Frozen,mRNA,mRNA,Primary,1.54,8.4
+TCGA-A6-6781-01A-22R-A278-07,ad478846-0a75-4081-ac09-37ee5415d9b4.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.54,8.4
+TCGA-A6-6781-01B-06R-A277-07,023160e4-1d9a-499c-9bfa-1b3aacf284f2.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,COAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-B2-3923-01A-02R-1325-07,d96fc441-a213-4f24-b2b1-a23d63883532.rna_seq.genomic.gdc_realn.bam,OG,KIRC,Fresh Frozen,mRNA,mRNA,Primary,1.7,8.9
+TCGA-B2-3923-01A-02R-A277-07,2a0d7ffd-21a2-4c9f-b420-9f78e9b8689b.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.7,8.9
+TCGA-B2-3923-01B-10R-A277-07,d5340889-fb1c-411d-922c-a9f69e1ac405.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,1.6
+TCGA-B2-3924-01A-02R-1325-07,343ac8e1-8afa-4e36-a373-ca28c3e7a713.rna_seq.genomic.gdc_realn.bam,OG,KIRC,Fresh Frozen,mRNA,mRNA,Primary,1.4,9.3
+TCGA-B2-3924-01A-02R-A277-07,a40c1d70-1750-45d0-a85b-688331b029ea.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.4,9.3
+TCGA-B2-3924-01B-03R-A277-07,f08c47f7-7b61-46a2-a961-d5fced8ebde5.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-B2-5633-01A-01R-1541-07,1e28caa3-197f-4deb-95c1-f6d8a41756ca.rna_seq.genomic.gdc_realn.bam,OG,KIRC,Fresh Frozen,mRNA,mRNA,Primary,1.6,8.8
+TCGA-B2-5633-01A-01R-A277-07,dc6421de-439b-4764-87bf-c1922cfeba3c.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.6,8.8
+TCGA-B2-5633-01B-04R-A277-07,9cc9f5b7-bbbb-4d3b-8d98-9bf4425a214b.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,1.3
+TCGA-B2-5635-01A-01R-1541-07,c276c214-acd9-44b3-b932-971c77c4fa91.rna_seq.genomic.gdc_realn.bam,OG,KIRC,Fresh Frozen,mRNA,mRNA,Primary,1.48,8.8
+TCGA-B2-5635-01A-01R-A277-07,82a0446c-baf9-4d27-bc14-73e00dc729ab.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.48,8.8
+TCGA-B2-5635-01B-04R-A277-07,27ea00ff-5f53-4110-9e56-8674a8e0ae40.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,KIRC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.3
+TCGA-44-2656-01A-02R-0946-07,b307f8c5-d21f-42ae-9771-07126d58999e.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.3,8.5
+TCGA-44-2656-01A-02R-A278-07,b556d35a-4855-4e56-9e02-5fc939722169.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.3,8.5
+TCGA-44-2656-01B-06R-A277-07,9f97863a-5019-41de-a095-dd20c4d55e02.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-44-2662-01A-01R-0946-07,33e0a8b2-3e7e-46da-b5ef-76463308d3b9.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.8,8.8
+TCGA-44-2662-01A-01R-A278-07,883ef55a-e8c0-4774-a298-d2bfeaeeae4b.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.8,8.8
+TCGA-44-2662-01B-02R-A277-07,3d11905a-16eb-40b2-a36b-e37dca6359d3.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-44-2666-01A-01R-0946-07,655b5152-d150-4b2a-b7cc-ef70dc0b2256.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.7,9.1
+TCGA-44-2666-01A-01R-A278-07,cc1646da-11b3-40c7-b35e-1206f4517b36.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.7,9.1
+TCGA-44-2666-01B-02R-A277-07,00d461ae-a1d8-42f2-abd8-5e159363d857.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-44-2668-01A-01R-0946-07,58e4f0e6-3b0f-4370-8abf-0b4d533672c5.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.6,9
+TCGA-44-2668-01A-01R-A278-07,9a54be5e-6201-4beb-9689-289b9849756e.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.6,9
+TCGA-44-2668-01B-02R-A277-07,812033b2-3784-44bf-8913-56307b267ea9.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-44-3918-01A-01R-1107-07,3f579bea-4481-42cd-b433-4f4ff65cf7b0.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.4,8.5
+TCGA-44-3918-01A-01R-A278-07,765dc4a5-ce4d-4437-9061-20c018bbbade.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.4,8.5
+TCGA-44-3918-01B-02R-A277-07,758b1a4d-bd46-4611-b8c3-49c5f62a2dab.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.5
+TCGA-44-5645-01A-01R-1628-07,d6e945f2-4a94-48ab-9ba0-d4f0ee2fb262.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.36,8.2
+TCGA-44-5645-01A-01R-A278-07,9e504ab4-85a0-465d-be52-0c28ed83e5f8.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.36,8.2
+TCGA-44-5645-01B-04R-A277-07,26fdaa75-cea5-4355-b3b1-6b5c2c75e542.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,1.1,2.5
+TCGA-44-6146-01A-11R-1755-07,735e3d15-4df3-4162-b819-1ebc1991bfce.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.5,9.2
+TCGA-44-6146-01A-11R-A278-07,d832db0a-348f-4e28-953a-741192fe0826.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.5,9.2
+TCGA-44-6146-01B-04R-A277-07,6338619f-470c-4ae1-8b45-959b5f9ad3da.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-44-6147-01A-11R-1755-07,9a5e0fa6-a785-4d8e-bca5-43e02a3965bf.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.3,7.8
+TCGA-44-6147-01A-11R-A278-07,fd713184-4bb4-4e1b-a3b8-636273ee6ccc.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.3,7.8
+TCGA-44-6147-01B-06R-A277-07,ee030015-242a-4dd1-b43c-2c97d5d365d9.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-44-6775-01A-11R-1858-07,7977a11b-246f-4c4c-a200-ee35d2d51fc5.rna_seq.genomic.gdc_realn.bam,OG,LUAD,Fresh Frozen,mRNA,mRNA,Primary,1.89,7.3
+TCGA-44-6775-01A-11R-A278-07,3369898e-21d8-4ded-8bbc-a746b1a743ad.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.89,7.3
+TCGA-44-6775-01C-02R-A277-07,a0ead79b-f99c-46d1-a092-4cb98291bdcc.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,LUAD,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-BK-A0CA-01A-21R-A118-07,43ae985c-ff38-4640-8fe3-10fe00c6b322.rna_seq.genomic.gdc_realn.bam,OG,UCEC,Fresh Frozen,mRNA,mRNA,Primary,1.7,8.7
+TCGA-BK-A0CA-01A-21R-A277-07,0ca9db0d-531f-42f6-a244-fbfe435ce7ce.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.7,8.7
+TCGA-BK-A0CA-01B-02R-A277-07,3394c05b-c0bc-4da1-812c-852a4030d53a.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.5
+TCGA-BK-A0CC-01A-21R-A16W-07,8fd3b86a-031a-44bf-840c-2b631d9e704c.rna_seq.genomic.gdc_realn.bam,OG,UCEC,Fresh Frozen,mRNA,mRNA,Primary,1.8,8.4
+TCGA-BK-A0CC-01A-21R-A277-07,d87075e1-ac28-4d7c-84d9-ab7847b353db.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.8,8.4
+TCGA-BK-A0CC-01B-04R-A277-07,9afd63d7-b2ad-4b3a-9b31-fd1e9cb397a9.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.4
+TCGA-BK-A139-01A-11R-A118-07,3eab23e9-4fbc-4acf-b9a8-9f5b613e3154.rna_seq.genomic.gdc_realn.bam,OG,UCEC,Fresh Frozen,mRNA,mRNA,Primary,1.8,8.2
+TCGA-BK-A139-01A-11R-A277-07,6e364595-4cfc-450c-ad92-24a69c79c755.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,1.8,8.2
+TCGA-BK-A139-01C-08R-A277-07,08df322c-7c0e-44a0-9dab-fb371cb31efb.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.6
+TCGA-BK-A26L-01A-11R-A16F-07,e0ad3f97-ddf5-40d6-abbd-2e0770b755bc.rna_seq.genomic.gdc_realn.bam,OG,UCEC,Fresh Frozen,mRNA,mRNA,Primary,2.3,8.5
+TCGA-BK-A26L-01A-11R-A277-07,44f36689-d1f0-49e8-a34d-5adecf1bd738.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,Fresh Frozen,TotalRNAseq,Ribo Zero,Primary,2.3,8.5
+TCGA-BK-A26L-01C-04R-A277-07,a487aa03-258a-4bda-87f8-ded765f8a347.rna_seq.genomic.gdc_realn.bam,FFPE Pilot 2,UCEC,FFPE,TotalRNAseq,Ribo Zero,Primary,0,2.2
