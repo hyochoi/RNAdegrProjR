@@ -29,7 +29,7 @@ devtools::load_all()
 suppressPackageStartupMessages({
   library(dplyr) # For manipulating the data
   library(data.table) # For working with data.tables
-  library(biomaRt) # For getting gene information
+  # library(biomaRt) # For getting gene information
   # library(org.Hs.eg.db) # For extracting entrezIDs
   library(edgeR) # For TMM normalization
   library(limma) # For TMM normalization
