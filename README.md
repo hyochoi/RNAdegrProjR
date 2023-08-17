@@ -14,5 +14,3 @@
 
 ## analysis
 ### 06_norm_pileup_fnreview_KEAP1.R
-1. pileData list for outputType="only_exon"
-1. Plots using functions (For KEAP1, all samples)
