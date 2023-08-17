@@ -3,9 +3,12 @@
 
 ## data-raw
 ### DATASET.R
-- Gene information table
-- Sample information table
-- Gene expression normalization
+1. Gene information table
+1. Sample information table
+1. Gene expression normalization
+- ref1
+- ref2
+
 
 ## analysis
 - 
