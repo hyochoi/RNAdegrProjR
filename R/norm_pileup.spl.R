@@ -20,11 +20,11 @@ norm_pileup.spl = function(pileup, rnum=100, method=1) {
 
   if (method==1) {
     # Method 1: Raw value
-    readdepth <- depthmat[pos3,2]
+    readdepth <- depthmat[pos3,2] # find read depth at even points (green points)
 
   } else if (method==2) {
     # Method 2: Interpolation
-    readdepth <- 10^(rollmean(log10(depthmat[pos4,2]+1), 2))-1 # geometric mean
+    readdepth <- 10^(rollmean(log10(depthmat[pos4,2]+1), 2))-1 # find geometric mean (blue points) of read depth at odd points (red points); 
 
   } else {
     stop(method," is not an option for method.")
