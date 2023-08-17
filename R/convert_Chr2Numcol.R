@@ -5,7 +5,7 @@
 #' @references https://www.geeksforgeeks.org/how-to-convert-dataframe-column-from-character-to-numeric-in-r/#
 #' @export
 
-convert_Chr2Numcol = function(df,colnums) {
+convert_Chr2Numcol = function(df, colnums) {
   vec <- c(colnums)
   df[ , vec] <- apply(df[ , vec,drop=F], 2, function(x) as.numeric(as.character(x)))
 
