@@ -22,23 +22,6 @@ suppressPackageStartupMessages({
 })
 
 
-
-#install.packages("ggstatsplot")
-library(ggstatsplot)
-#install.packages("palmerpenguins")
-library(palmerpenguins)
-library(tidyverse)
-
-#install.packages("rstantools")
-library(rstantools)
-
-
-#install.packages("reshape2") # corr heatmap
-library(reshape2)
-library(devtools)
-
-
-
 ## ---- 1. Outputs from Picard tool CollectRnaSeqMetrics, HISTOGRAM
 
 Allfiles <- list.files("data-raw/MostExpressed/1kb")
