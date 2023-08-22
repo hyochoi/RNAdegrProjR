@@ -84,7 +84,7 @@ for (g in 1:length(genes)){
   pileupData = build_pileupId(Pileup=pileup6, regions=regions, inputType="part_intron", outputType="only_exon")
   geneRanges = get_Ranges(Gene=Ranges$Gene, regions=regions, outputType="only_exon")
 
-  ## Pileup figure 2 for all 101 genes (mean pileup within each group; only_exon; 26 samples)
+  ## Pileup figure 2 for all 101 genes (median and mean pileup within each group; only_exon; 26 samples)
   FFMcol <- seq(1, length(AllPtLists), by=3)
   FFTcol <- FFMcol+1
   PETcol <- FFMcol+2
