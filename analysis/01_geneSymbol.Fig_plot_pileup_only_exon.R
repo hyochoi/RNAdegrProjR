@@ -1,6 +1,6 @@
-## ---------------------------------------------------
-##    code for geneSymbol.Fig_plot_pileup_only_exon
-## ---------------------------------------------------
+## -----------------------------------------
+##    code for pileup plots for only exon
+## -----------------------------------------
 
 ## ---- renv
 
@@ -16,11 +16,11 @@ suppressPackageStartupMessages({
   library(data.table) # For working with data.tables
   # library(biomaRt) # For getting gene information
   # library(org.Hs.eg.db) # For extracting entrezIDs
-  library(SCISSOR) # For pileup and genomic/locus ranges
+  library(SCISSOR) # For pileup and genomic ranges
 })
 
 
-## ---- 1. geneSymbol.Fig1_plot_pileupPair
+## ---- 1. Pileup plots for each sample
 
 load("data-raw/Pilot2.RData") # from DATASET.R
 
@@ -45,7 +45,7 @@ for (g in 1:length(genes)){
   UnqPtLists <- unique(substr(colnames(pileupData), start=1, stop=12))
 
   pdf(file=sprintf("01_DataPreprocessing_output/gene_pileups_only_exon_34spls/%s.Fig1_plot_pileupPair.pdf", gthgene), width=12, height=9,
-    bg="white", colormodel="cmyk", paper="letter")
+      bg="white", colormodel="cmyk", paper="letter")
   par(mfrow=c(3,3))
   for (i in 1:length(UnqPtLists)){
     plot_pileupPair(AllPileup=log10(pileupData+1), Pileup=log10(pileupData+1)[,(3*(i-1)+1):(3*(i-1)+3)], Ranges=geneRanges, main=AllPtLists[3*(i-1)+1], logcount=1)
@@ -54,7 +54,7 @@ for (g in 1:length(genes)){
 }
 
 
-## ---- 2. geneSymbol.Fig2_plot_pileupStat_only_exon
+## ---- 2. Median and mean pileup plots within each pair
 
 for (g in 1:length(genes)){
   gthgene <- genes[g]
