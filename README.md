@@ -29,7 +29,7 @@ In this study, we examine RNA-seq data paired in fresh frozen (FF) and FFPE from
 - Pileup plot for each sample (The difference in read depth between samples)
 - Normalized transcript coverage[^5] (using Picard tool CollectRnaSeqMetrics[^6])
 - Genome alignment profiles[^7]
-- Comparison between lncRNA and protein-coding
+- FFT mean vs. PET mean scatter plot (Comparison between lncRNA and protein-coding)
 - Ratio heatmap with ward.D clustering of genes and patients
 [^5]: https://doi.org/10.1186/s12864-017-3827-y
 [^6]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectRnaSeqMetrics
