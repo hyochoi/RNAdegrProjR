@@ -92,7 +92,6 @@ pair <- substr(rownames(MCmat4), start=14, stop=16)
 df <- data.frame(pair, PCTmat)
 dim(df) # 94  6
 
-
 pair1 <- rep(df[,c("pair")],5)
 grp1 <- c(rep("Unaligned",nrow(df)),rep("Intergenic",nrow(df)),
         rep("Intronic",nrow(df)), rep("Coding+UTR",nrow(df)),
