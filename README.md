@@ -44,6 +44,8 @@ library(devtools)
 install_github("hyochoi/RNAdegr")
 library(RNAdegr)
 ```
+> [!NOTE]
+> `RNAdegr` requires the `SCISSOR` package, and its dependencies are at https://github.com/hyochoi/SCISSOR.
 
 
 ## References
