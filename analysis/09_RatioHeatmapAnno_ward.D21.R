@@ -1,5 +1,5 @@
 ## ---------------------------------------------------
-##    code for Ratio heatmap with ward.D clustering
+##    code for ratio heatmap with ward.D clustering
 ## ---------------------------------------------------
 
 ## ---- renv
