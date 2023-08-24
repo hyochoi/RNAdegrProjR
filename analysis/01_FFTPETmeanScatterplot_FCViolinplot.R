@@ -1,6 +1,6 @@
-## --------------------------------------------
-##    code for FFT vs. PET mean scatter plot
-## --------------------------------------------
+## ------------------------------------------------------------
+##    code for FFT vs. PET mean scatter plot and violin plot
+## ------------------------------------------------------------
 
 ## ---- renv
 
@@ -333,4 +333,34 @@ grid.arrange(grobs=list(e1))
 grid.arrange(grobs=list(e2))
 grid.arrange(grobs=list(e3))
 grid.arrange(grobs=list(e4))
+dev.off()
+
+
+## ---- 3. Fragment counts violin plot
+
+df <- FCdf_TMM_SepByPair_log2
+
+# Select gene
+df1 <- df[df$geneSymbol=="MALAT1" | df$geneSymbol=="NEAT1" | df$geneSymbol=="GAPDH" | df$geneSymbol=="ACTB",]
+
+# Plot
+p1 <- ggplot(df1, aes(x=pair, y=counts, color=pair)) +
+  scale_colour_brewer(palette="Set1") +
+  geom_violin() +
+  stat_summary(fun=mean, geom="point", shape=23, size=2, fill="black") +
+  geom_jitter(alpha=0.4, shape=16, size=1, position=position_jitter(0.3)) +
+  theme(legend.position="right") +
+  labs(title="TMM_log2(TMM+1)",x="", y="") +
+  guides(colour=guide_legend(title="")) +
+  theme(panel.background=element_rect(fill="gray97")) +
+  theme(legend.text=element_text(size=7)) +
+  facet_grid(.~ geneSymbol) +
+  theme(
+    strip.text.x = element_text(size = 12, color = "black"),
+    strip.text.y = element_text(size = 12, color = "black"),
+    strip.background = element_rect(color="NA", fill="white", linewidth=1, linetype="solid"))
+
+pdf(file="01_DataPreprocessing_output/FragmentCounts_norm_94ids_AllCategory_filterByExpr/FragmentCountsViolinplot_TMMlog2_filterByExpr.pdf", width=12, height=9,
+    bg="white", colormodel="cmyk", paper="letter", onefile=TRUE)
+grid.arrange(grobs=list(p1), nrow=2)
 dev.off()
