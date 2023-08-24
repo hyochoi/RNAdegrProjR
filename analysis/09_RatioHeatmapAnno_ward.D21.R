@@ -38,8 +38,6 @@ PETcol <- grep(pattern=keepcol[3],x=pair)
 
 FFTmat <- FCmat_TMM_SepByPair_log2[,c(FFTcol)]
 PETmat <- FCmat_TMM_SepByPair_log2[,c(PETcol)]
-dim(FFTmat) # 24798    34
-dim(PETmat) # 24798    34
 
 # Sort by colnames (patients)
 FFTmat1 <- FFTmat[, order(colnames(FFTmat))]
@@ -48,8 +46,6 @@ PETmat1 <- PETmat[, order(colnames(PETmat))]
 # Sort by rownames (genes)
 FFTmat2 <- FFTmat1[order(rownames(FFTmat1)), ]
 PETmat2 <- PETmat1[order(rownames(PETmat1)), ]
-dim(FFTmat2) # 24798    34
-dim(PETmat2) # 24798    34
 
 # PET - FFT
 Ratiomat = PETmat2-FFTmat2
@@ -75,7 +71,6 @@ df <- merge(FFT2, PET2, by="geneSymbol", all.x=TRUE, sort=TRUE)
 
 # RatioPETFFT
 df$RatioPETFFT = df$PETmean-df$FFTmean
-dim(df) # 24798     4
 
 # Sort by RatioPETFFT
 df3 <- df[order(df$RatioPETFFT, decreasing=FALSE), ]
@@ -247,7 +242,7 @@ dim(SplAnnomat) # 34 49
 ## HeatmapAnnotation
 col_ts = c("BLCA" = "#66C2A5", "BRCA" = "#FC8D62", "COAD" = "#8DA0CB", "KIRC" = "#E78AC3", "LUAD" = "#A6D854", "UCEC" = "#FFD92F")
 lgd18 = Legend(labels = c("BLCA", "BRCA", "COAD", "KIRC", "LUAD", "UCEC"),
-              title = "Tissue", legend_gp = gpar(fill = col_ts), title_position = "lefttop", labels_gp = gpar(fontsize = 8))
+               title = "Tissue", legend_gp = gpar(fill = col_ts), title_position = "lefttop", labels_gp = gpar(fontsize = 8))
 
 col_fun_prop9 = colorRamp2(c(0, 0.5, 1), c(colwheel[24], "white", colwheel[8]))
 lgd9 = Legend(col_fun = col_fun_prop9, title = "PET PCT_CODING_BASES", at = c(0, 0.5, 1), direction = "horizontal", legend_height = unit(0.5, "mm"), legend_width = unit(25, "mm"), title_position = "lefttop", labels_gp = gpar(fontsize = 8),
@@ -286,27 +281,27 @@ lgd17 = Legend(col_fun = col_fun_prop17, title = "PET RIN", at = c(0, 0.5, 1), d
                labels = c(round(min(SplAnnomat$rinvalue),1), round(quantile(SplAnnomat$rinvalue, 0.5),1), round(max(SplAnnomat$rinvalue),1)))
 
 column_ha4 = HeatmapAnnotation(Tissue = SplAnnomat$Tissue,
-                              "PET PCT_CODING_BASES" = SplAnnomat$PCT_CODING_BASES_ecdf,
-                              "PET PCT_INTRONIC_BASES" = SplAnnomat$PCT_INTRONIC_BASES_ecdf,
-                              "PET PCT_INTERGENIC_BASES" = SplAnnomat$PCT_INTERGENIC_BASES_ecdf,
-                              "PET PCT_MRNA_BASES" = SplAnnomat$PCT_MRNA_BASES_ecdf,
-                              "PET MEDIAN_CV_COVERAGE" = SplAnnomat$MEDIAN_CV_COVERAGE_ecdf,
-                              "PET MEDIAN_3PRIME_BIAS" = SplAnnomat$MEDIAN_3PRIME_BIAS_ecdf,
-                              "PET MEDIAN_5PRIME_BIAS" = SplAnnomat$MEDIAN_5PRIME_BIAS_ecdf,
-                              "PET RatioIntron" = SplAnnomat$RatioIntron_ecdf,
-                              "PET RIN" = SplAnnomat$rinvalue_ecdf,
-                              annotation_name_gp= gpar(fontsize = 8), annotation_name_rot = c(00),
-                              col = list(Tissue = col_ts,
-                                         "PET PCT_CODING_BASES" = col_fun_prop9,
-                                         "PET PCT_INTRONIC_BASES" = col_fun_prop10,
-                                         "PET PCT_INTERGENIC_BASES" = col_fun_prop11,
-                                         "PET PCT_MRNA_BASES" = col_fun_prop12,
-                                         "PET MEDIAN_CV_COVERAGE" = col_fun_prop13,
-                                         "PET MEDIAN_3PRIME_BIAS" = col_fun_prop14,
-                                         "PET MEDIAN_5PRIME_BIAS" = col_fun_prop15,
-                                         "PET RatioIntron" = col_fun_prop16,
-                                         "PET RIN" = col_fun_prop17), show_legend = FALSE,
-                              annotation_name_side = c("right"))
+                               "PET PCT_CODING_BASES" = SplAnnomat$PCT_CODING_BASES_ecdf,
+                               "PET PCT_INTRONIC_BASES" = SplAnnomat$PCT_INTRONIC_BASES_ecdf,
+                               "PET PCT_INTERGENIC_BASES" = SplAnnomat$PCT_INTERGENIC_BASES_ecdf,
+                               "PET PCT_MRNA_BASES" = SplAnnomat$PCT_MRNA_BASES_ecdf,
+                               "PET MEDIAN_CV_COVERAGE" = SplAnnomat$MEDIAN_CV_COVERAGE_ecdf,
+                               "PET MEDIAN_3PRIME_BIAS" = SplAnnomat$MEDIAN_3PRIME_BIAS_ecdf,
+                               "PET MEDIAN_5PRIME_BIAS" = SplAnnomat$MEDIAN_5PRIME_BIAS_ecdf,
+                               "PET RatioIntron" = SplAnnomat$RatioIntron_ecdf,
+                               "PET RIN" = SplAnnomat$rinvalue_ecdf,
+                               annotation_name_gp= gpar(fontsize = 8), annotation_name_rot = c(00),
+                               col = list(Tissue = col_ts,
+                                          "PET PCT_CODING_BASES" = col_fun_prop9,
+                                          "PET PCT_INTRONIC_BASES" = col_fun_prop10,
+                                          "PET PCT_INTERGENIC_BASES" = col_fun_prop11,
+                                          "PET PCT_MRNA_BASES" = col_fun_prop12,
+                                          "PET MEDIAN_CV_COVERAGE" = col_fun_prop13,
+                                          "PET MEDIAN_3PRIME_BIAS" = col_fun_prop14,
+                                          "PET MEDIAN_5PRIME_BIAS" = col_fun_prop15,
+                                          "PET RatioIntron" = col_fun_prop16,
+                                          "PET RIN" = col_fun_prop17), show_legend = FALSE,
+                               annotation_name_side = c("right"))
 
 # Find two max values (red)
 grep(pattern="TCGA-A6-2674",x=colnames(Ratiomat)) # 10
