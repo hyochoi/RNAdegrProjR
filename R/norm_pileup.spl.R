@@ -5,7 +5,7 @@
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a vector with length=rnum.
 #' @references https://github.com/hyochoi/SCISSOR
-#' @import SCISSOR
+#' @import SCISSOR zoo
 #' @export
 
 norm_pileup.spl = function(pileup, rnum=100, method=1) {
@@ -24,7 +24,7 @@ norm_pileup.spl = function(pileup, rnum=100, method=1) {
 
   } else if (method==2) {
     # Method 2: Interpolation
-    readdepth <- 10^(rollmean(log10(depthmat[pos4,2]+1), 2))-1 # find geometric mean (blue points) using read depth at odd points (red points)
+    readdepth <- 10^(round(zoo::rollmean(log10(depthmat[pos4,2]+1),2), 10))-1 # find geometric mean (blue points) using read depth at odd points (red points)
 
   } else {
     stop(method," is not an option for method.")
