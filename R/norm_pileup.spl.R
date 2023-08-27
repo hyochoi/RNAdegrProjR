@@ -5,7 +5,7 @@
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a vector with length=rnum.
 #' @references https://github.com/hyochoi/SCISSOR
-#' @import SCISSOR zoo
+#' @import zoo
 #' @export
 
 norm_pileup.spl = function(pileup, rnum=100, method=1) {
