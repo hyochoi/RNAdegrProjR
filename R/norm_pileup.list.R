@@ -6,7 +6,7 @@
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a rnum x the number of samples matrix at each gene list.
 #' @references https://github.com/hyochoi/SCISSOR
-#' @import SCISSOR miceadds
+#' @import miceadds
 #' @export
 
 norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
