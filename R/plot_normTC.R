@@ -9,7 +9,7 @@
 #' @param plot TRUE/FALSE turns on/off the normalized transcript coverage plot. Default is TRUE.
 #' @return a matrix and a plot, or a matrix for the normalized transcript coverage where plot is TRUE or FALSE, respectively.
 #' @references https://github.com/hyochoi/SCISSOR
-#' @import SCISSOR tidyverse ggplot2
+#' @import ggplot2
 #' @export
 
 plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE, stat=1, plot=TRUE) {
