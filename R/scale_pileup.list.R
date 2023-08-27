@@ -7,7 +7,6 @@
 #' @param scale TRUE/FALSE returns the scaled/unscaled normalized transcript coverage. Default is TRUE.
 #' @return gene lists (rows are regions and columns are samples) for the normalized transcript coverage after gene length normalization
 #' @references https://github.com/hyochoi/SCISSOR
-#' @import SCISSOR
 #' @export
 
 scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE) {
