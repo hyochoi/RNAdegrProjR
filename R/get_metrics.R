@@ -18,12 +18,12 @@ get_metrics = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
   if (margin==1 | margin==2 | margin==3) {
     # Use positive values only; if all values are 0 then all stats are 0
     var.sum <- as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) sum(x^2)))
-    var.mean <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) mean(ifelse((x>0), x, NA), na.rm=TRUE))))
-    var.sd <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) sd(ifelse((x>0), x, NA), na.rm=TRUE))))
+    var.mean <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) mean(ifelse(x>0, x, NA), na.rm=TRUE))))
+    var.sd <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) sd(ifelse(x>0, x, NA), na.rm=TRUE))))
     CV <- 0*var.mean
     CV[] <- ifelse((var.mean<1e-10 | var.sd<1e-10), 0, var.sd/var.mean) # to adjust NaN, Inf
-    var.median <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) median(ifelse((x>0), x, NA), na.rm=TRUE))))
-    var.mad <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) mad(ifelse((x>0), x, NA), na.rm=TRUE))))
+    var.median <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) median(ifelse(x>0, x, NA), na.rm=TRUE))))
+    var.mad <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) mad(ifelse(x>0, x, NA), na.rm=TRUE))))
     robustCV <- 0*var.median
     robustCV[] <- ifelse((var.median<1e-10 | var.mad<1e-10), 0, var.mad/var.median) # to adjust NaN, Inf
 
