@@ -90,13 +90,13 @@ df8 <- df7[,c("RatioPETFFT","FFTmean","PETmean","merged","exon.wtpct_gc","intron
 # Convert a continuous variable to eCDF values
 mt <- t(data.matrix(df8))
 
-FFTmeandf = convert_Cont2eCDF.gene(mt[c("FFTmean"),],"FFTmean")
-PETmeandf = convert_Cont2eCDF.gene(mt[c("PETmean"),],"PETmean")
-mergeddf = convert_Cont2eCDF.gene(mt[c("merged"),],"merged")
-meanlen.3UTRdf = convert_Cont2eCDF.gene(mt[c("3UTR.meanlen"),],"3UTR.meanlen")
-meanlen.5UTRdf = convert_Cont2eCDF.gene(mt[c("5UTR.meanlen"),],"5UTR.meanlen")
-exon.wtpct_gcdf = convert_Cont2eCDF.gene(mt[c("exon.wtpct_gc"),],"exon.wtpct_gc")
-intron.wtpct_gcdf = convert_Cont2eCDF.gene(mt[c("intron.wtpct_gc"),],"intron.wtpct_gc")
+FFTmeandf = convert_Cont2eCDF(mt[c("FFTmean"),],"FFTmean", margin=1)
+PETmeandf = convert_Cont2eCDF(mt[c("PETmean"),],"PETmean", margin=1)
+mergeddf = convert_Cont2eCDF(mt[c("merged"),],"merged", margin=1)
+meanlen.3UTRdf = convert_Cont2eCDF(mt[c("3UTR.meanlen"),],"3UTR.meanlen", margin=1)
+meanlen.5UTRdf = convert_Cont2eCDF(mt[c("5UTR.meanlen"),],"5UTR.meanlen", margin=1)
+exon.wtpct_gcdf = convert_Cont2eCDF(mt[c("exon.wtpct_gc"),],"exon.wtpct_gc", margin=1)
+intron.wtpct_gcdf = convert_Cont2eCDF(mt[c("intron.wtpct_gc"),],"intron.wtpct_gc", margin=1)
 
 geneSymbol <- as.matrix(rownames(df8))
 df9 <- cbind(geneSymbol, df8)
@@ -121,7 +121,7 @@ dim(GeneAnnomat) # 24798    17
 # Find complementary colors
 colwheel <- wheel("#E41A1C", num = 32)
 [1] "#E41A1C" "#E43E1A" "#E4641A" "#E48A1A" "#E4B01A" "#E4D51A" "#CDE41A" "#A7E41A" "#81E41A" "#5BE41A" "#35E41A" "#1AE425" "#1AE44B" "#1AE470" "#1AE496" "#1AE4BC"
-    "#1AE4E2" "#1AC0E4" "#1A9AE4" "#1A74E4" "#1A4EE4" "#1A29E4" "#311AE4" "#571AE4" "#7D1AE4" "#A31AE4" "#C91AE4" "#E41AD9" "#E41AB3" "#E41A8E" "#E41A68" "#E41A42"
+"#1AE4E2" "#1AC0E4" "#1A9AE4" "#1A74E4" "#1A4EE4" "#1A29E4" "#311AE4" "#571AE4" "#7D1AE4" "#A31AE4" "#C91AE4" "#E41AD9" "#E41AB3" "#E41A8E" "#E41A68" "#E41A42"
 
 col_sc = c("lncRNA" = "#E41A1C", "non-coding RNA" = "#377EB8", "protein_coding" = "#4DAF4A", "pseudogene" = "#984EA3", "TEC" = "#FF7F00")
 lgd1 = Legend(labels = c("LncRNA","Non-coding RNA","Protein coding","Pseudogene","TEC"), title = "Subcategory", legend_gp = gpar(fill = col_sc), title_position = "lefttop", labels_gp = gpar(fontsize = 8))
@@ -214,15 +214,15 @@ SampleInfo5 <- SampleInfo2[SampleInfo2$pair2=="PET",]
 rownames(SampleInfo5) <- c(SampleInfo5$NewSampleId)
 st <- t(data.matrix(SampleInfo5))
 
-PCT_CODING_BASESdf = convert_Cont2eCDF.spl(st[c("PCT_CODING_BASES"),],"PCT_CODING_BASES")
-PCT_INTRONIC_BASESdf = convert_Cont2eCDF.spl(st[c("PCT_INTRONIC_BASES"),],"PCT_INTRONIC_BASES")
-PCT_INTERGENIC_BASESdf = convert_Cont2eCDF.spl(st[c("PCT_INTERGENIC_BASES"),],"PCT_INTERGENIC_BASES")
-PCT_MRNA_BASESdf = convert_Cont2eCDF.spl(st[c("PCT_MRNA_BASES"),],"PCT_MRNA_BASES")
-MEDIAN_CV_COVERAGEdf = convert_Cont2eCDF.spl(st[c("MEDIAN_CV_COVERAGE"),],"MEDIAN_CV_COVERAGE")
-MEDIAN_3PRIME_BIASdf = convert_Cont2eCDF.spl(st[c("MEDIAN_3PRIME_BIAS"),],"MEDIAN_3PRIME_BIAS")
-MEDIAN_5PRIME_BIASdf = convert_Cont2eCDF.spl(st[c("MEDIAN_5PRIME_BIAS"),],"MEDIAN_5PRIME_BIAS")
-RatioIntrondf = convert_Cont2eCDF.spl(st[c("RatioIntron"),],"RatioIntron")
-rinvaluedf = convert_Cont2eCDF.spl(st[c("rinvalue"),],"rinvalue")
+PCT_CODING_BASESdf = convert_Cont2eCDF(st[c("PCT_CODING_BASES"),],"PCT_CODING_BASES", margin=2)
+PCT_INTRONIC_BASESdf = convert_Cont2eCDF(st[c("PCT_INTRONIC_BASES"),],"PCT_INTRONIC_BASES", margin=2)
+PCT_INTERGENIC_BASESdf = convert_Cont2eCDF(st[c("PCT_INTERGENIC_BASES"),],"PCT_INTERGENIC_BASES", margin=2)
+PCT_MRNA_BASESdf = convert_Cont2eCDF(st[c("PCT_MRNA_BASES"),],"PCT_MRNA_BASES", margin=2)
+MEDIAN_CV_COVERAGEdf = convert_Cont2eCDF(st[c("MEDIAN_CV_COVERAGE"),],"MEDIAN_CV_COVERAGE", margin=2)
+MEDIAN_3PRIME_BIASdf = convert_Cont2eCDF(st[c("MEDIAN_3PRIME_BIAS"),],"MEDIAN_3PRIME_BIAS", margin=2)
+MEDIAN_5PRIME_BIASdf = convert_Cont2eCDF(st[c("MEDIAN_5PRIME_BIAS"),],"MEDIAN_5PRIME_BIAS", margin=2)
+RatioIntrondf = convert_Cont2eCDF(st[c("RatioIntron"),],"RatioIntron", margin=2)
+rinvaluedf = convert_Cont2eCDF(st[c("rinvalue"),],"rinvalue", margin=2)
 
 SampleInfo6 <- merge(SampleInfo5, PCT_CODING_BASESdf, by="NewSampleId", all.x=TRUE)
 SampleInfo7 <- merge(SampleInfo6, PCT_INTRONIC_BASESdf, by="NewSampleId", all.x=TRUE)
@@ -326,7 +326,7 @@ hm40 = Heatmap(Ratiomat, name = "PET - FFT", left_annotation = row_ha5, bottom_a
                show_row_names = FALSE, show_column_names = TRUE,
                use_raster = FALSE,
                column_names_gp = gpar(fontsize=8, col = c(rep("black", 7), c(rep("blue", 1), c(rep("black", 1), rep("red", 1), rep("black", 1), rep("red", 1),
-                                                          rep("black", 1), rep("blue", 2), rep("black", 1), rep("blue", 2), rep("black", 2), rep("blue", 1), rep("black", 13))))),
+                                                                                               rep("black", 1), rep("blue", 2), rep("black", 1), rep("blue", 2), rep("black", 2), rep("blue", 1), rep("black", 13))))),
                row_title = "24,798 genes", row_title_gp = gpar(fontface = "bold"),
                column_title = "34 patients \nClustering method: ward.D", column_title_side = "bottom", column_title_gp = gpar(fontface = "bold"),
                show_heatmap_legend = FALSE,
