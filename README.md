@@ -1,12 +1,12 @@
 # RNAdegrProjR
-Comparison and assessment of mRNA degradation in fresh frozen tissue and formalin-fixed paraffin-embedded tissue
+Deciphering RNA degradation: Insights from a comparative analysis of paired fresh frozen/FFPE total RNA-seq
 
 
-## Abstract
-In this study, we examine RNA-seq data paired in fresh frozen (FF) and FFPE from multiple tumor types obtained from a subset of The Cancer Genome Atlas (TCGA) cohorts. We compare FF mRNA-seq (FFM), FF total RNA-seq (FFT), and FFPE total RNA-seq (PET) and evaluate two different RNA preservation methods (FF vs. FFPE) as well as two different RNA preparation protocols (mRNA-seq vs. Ribo-Zero-seq). First, we perform genome-wide comparisons of gene expression profiles with all three pairs of FFM, FFT, and PET using unsupervised/supervised clustering methods. Second, we evaluate gene-specific and sample-specific degradation using SCISSOR and identify severely degraded samples. Our results demonstrate that the impact of formalin-induced degradation is highly gene-specific that might be associated with multiple factors such as RNA localization, gene length, and GC concentration. We also show that the level of formalin-induced degradation could be different in FFPE samples and thus should be correctly adjusted for the downstream gene expression analysis.
+## RNAdegr Description
+`RNAdegr` investigates RNA degradation patterns in fresh frozen mRNA-seq [FFM], fresh frozen total RNA-seq [FFT], and FFPE total RNA-seq [PET]. `RNAdegr` measures noise patterns in selected samples by a method called windowCV (wCV) utilizing the coefficient of variance (CV) along the transcript length. The simple measure dividing the expression value of other proteins with certain lncRNA or mtRNA inferring the degree of RNA degradation is also included.
 
 
-## Data pre-processing
+## Data Pre-processing
 - Gene information table
 - Sample information table
 - Gene expression normalization[^1]: FPKM and TPM[^2], FPKM-UQ[^3], TMM[^4]
@@ -14,6 +14,11 @@ In this study, we examine RNA-seq data paired in fresh frozen (FF) and FFPE from
 [^2]: https://doi.org/10.1186/s12967-021-02936-w
 [^3]: https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/Expression_mRNA_Pipeline/
 [^4]: https://bioconductor.org/packages/release/workflows/vignettes/RnaSeqGeneEdgeRQL/inst/doc/edgeRQL.html
+
+
+## Documentation
+- R function overview
+- TCGA example
 
 
 ## R functions
