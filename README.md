@@ -9,11 +9,6 @@ Deciphering RNA degradation: Insights from a comparative analysis of paired fres
 ## Data Pre-processing
 - Gene information table
 - Sample information table
-- Gene expression normalization[^1]: FPKM and TPM[^2], FPKM-UQ[^3], TMM[^4]
-[^1]: https://hbctraining.github.io/DGE_workshop_salmon/lessons/02_DGE_count_normalization.html
-[^2]: https://doi.org/10.1186/s12967-021-02936-w
-[^3]: https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/Expression_mRNA_Pipeline/
-[^4]: https://bioconductor.org/packages/release/workflows/vignettes/RnaSeqGeneEdgeRQL/inst/doc/edgeRQL.html
 
 
 ## Documentation
