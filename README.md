@@ -17,17 +17,8 @@ Deciphering RNA degradation: Insights from a comparative analysis of paired fres
 
 
 ## Documentation
-- R function overview
+- [R function overview](https://github.com/hyochoi/RNAdegrProjR/blob/master/doc/doc_Rfn.md)
 - TCGA example
-
-
-## R functions
-### Gene length normalization
-- Method 1: find read depth at even points (green points)
-- Method 2: find geometric mean (blue points) using read depth at odd points (red points)
-![alt text](https://github.com/hyochoi/RNAdegrProjR/blob/main/images/norm_pileup_methods2.png?raw=true)
-> [!NOTE]
-> We recommend using the gene length normalization methods for gene length is at least 201 (2*the number of regions+1) where the number of regions is 100.
 
 
 ## Analysis
@@ -49,8 +40,7 @@ library(devtools)
 install_github("hyochoi/RNAdegr")
 library(RNAdegr)
 ```
-> [!NOTE]
-> `RNAdegr` requires the `SCISSOR` package, and its dependencies are at https://github.com/hyochoi/SCISSOR.
+- `RNAdegr` requires the `SCISSOR` package, and its dependencies are at https://github.com/hyochoi/SCISSOR.
 
 
 ## References
