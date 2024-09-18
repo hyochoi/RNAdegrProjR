@@ -3,7 +3,7 @@ Deciphering RNA degradation: Insights from a comparative analysis of paired fres
 
 
 ## RNAdegr Description
-`RNAdegr` investigates RNA degradation patterns in fresh frozen mRNA-seq [FFM], fresh frozen total RNA-seq [FFT], and FFPE total RNA-seq [PET]. `RNAdegr` measures noise patterns in selected samples by a method called windowCV (wCV) utilizing the coefficient of variance (CV) along the transcript length for total RNA-seq and FFPE samples. <!-- The simple measure dividing the expression value of other proteins with certain lncRNA or mtRNA inferring the degree of RNA degradation is also included. -->
+`RNAdegr` investigates RNA degradation patterns in fresh frozen mRNA-seq [FFM], fresh frozen total RNA-seq [FFT], and FFPE total RNA-seq [PET]. `RNAdegr` measures noise patterns in total RNA-seq and FFPE samples by a method called windowCV (wCV) utilizing the coefficient of variance (CV) along the transcript length. <!-- The simple measure dividing the expression value of other proteins with certain lncRNA or mtRNA inferring the degree of RNA degradation is also included. -->
 
 
 ## Data Pre-processing
