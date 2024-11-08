@@ -3,7 +3,7 @@ Deciphering RNA degradation: Insights from a comparative analysis of paired fres
 
 
 ## RNAdegr Description
-`RNAdegr` investigates RNA degradation patterns in fresh frozen mRNA-seq [FFM], fresh frozen total RNA-seq [FFT], and FFPE total RNA-seq [PET]. `RNAdegr` measures noise patterns in selected samples by a method called windowCV (wCV) utilizing the coefficient of variance (CV) along the transcript length. The simple measure dividing the expression value of other proteins with certain lncRNA or mtRNA inferring the degree of RNA degradation is also included.
+`RNAdegr` investigates RNA degradation patterns in fresh frozen mRNA-seq [FFM], fresh frozen total RNA-seq [FFT], and FFPE total RNA-seq [PET]. `RNAdegr` measures noise patterns in total RNA-seq and FFPE samples by a method called windowCV (wCV) utilizing the coefficient of variance (CV) along the transcript length. <!-- The simple measure dividing the expression value of other proteins with certain lncRNA or mtRNA inferring the degree of RNA degradation is also included. -->
 
 
 ## Data Pre-processing
@@ -17,17 +17,8 @@ Deciphering RNA degradation: Insights from a comparative analysis of paired fres
 
 
 ## Documentation
-- R function overview
+- [R function overview](https://github.com/hyochoi/RNAdegrProjR/blob/master/doc/doc_Rfn.md)
 - TCGA example
-
-
-## R functions
-### Gene length normalization
-- Method 1: find read depth at even points (green points)
-- Method 2: find geometric mean (blue points) using read depth at odd points (red points)
-![alt text](https://github.com/hyochoi/RNAdegrProjR/blob/main/images/norm_pileup_methods2.png?raw=true)
-> [!NOTE]
-> We recommend using the gene length normalization methods for gene length is at least 201 (2*the number of regions+1) where the number of regions is 100.
 
 
 ## Analysis
@@ -49,8 +40,7 @@ library(devtools)
 install_github("hyochoi/RNAdegr")
 library(RNAdegr)
 ```
-> [!NOTE]
-> `RNAdegr` requires the `SCISSOR` package, and its dependencies are at https://github.com/hyochoi/SCISSOR.
+- `RNAdegr` requires the `SCISSOR` package, and its dependencies are at https://github.com/hyochoi/SCISSOR.
 
 
 ## References
