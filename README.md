@@ -1,9 +1,9 @@
 # RNAdegrProjR
-Deciphering RNA degradation: Insights from a comparative analysis of paired fresh frozen/FFPE total RNA-seq
 
+Despite the advantages of easy storage and cost-effectiveness, formalin-fixed paraffin-embedded (FFPE) samples have the disadvantage of inevitable chemical-induced RNA degradation. While the 3' bias due to the characteristics of the mRNA-seq platform allows the measure of RNA degradation levels in mRNA-seq data, there is still no clear measure for RNA degradation for total RNA-seq and FFPE samples.
+`RNAdegrProjR` investigates RNA degradation patterns in fresh frozen mRNA-seq [FFM], fresh frozen total RNA-seq [FFT], and FFPE total RNA-seq [PET], which measures noise patterns in total RNA-seq and FFPE samples by a method called windowCV. The sample quality index can be achieved by outlier detection from the relation between wCV and mean coverage depth.
 
-## RNAdegr Description
-`RNAdegr` investigates RNA degradation patterns in fresh frozen mRNA-seq [FFM], fresh frozen total RNA-seq [FFT], and FFPE total RNA-seq [PET]. `RNAdegr` measures noise patterns in total RNA-seq and FFPE samples by a method called windowCV (wCV) utilizing the coefficient of variance (CV) along the transcript length. <!-- The simple measure dividing the expression value of other proteins with certain lncRNA or mtRNA inferring the degree of RNA degradation is also included. -->
+- Abstract: https://doi.org/10.1158/1538-7445.AM2024-2323
 
 
 ## Data Pre-processing
