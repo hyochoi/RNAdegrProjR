@@ -2,4 +2,5 @@
 ^\.Rproj\.user$
 ^analysis$
 ^data-raw$
-^images$
+^figures$
+^doc$
