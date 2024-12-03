@@ -25,11 +25,14 @@ Despite easy storage and cost-effectiveness advantages, formalin-fixed paraffin-
 
 
 ## Data Analysis
-- Pileup plot for each sample (The difference in read depth between samples)
-- Normalized transcript coverage[^5] using Picard tool CollectRnaSeqMetrics[^6]
-- Genome alignment profiles[^7]
-- FFT vs. PET mean scatter plot (Comparison between lncRNA and protein-coding)
-- Ratio heatmap with ward.D clustering of genes and patients
+
+- FFT vs. PET mean scatter and violin plots to compare lncRNA and protein-coding
+- Pileup plots to investigate the difference in read depth by sample and RNA-seq platform
+- Genome alignment profiles using metrics about the alignment of RNA-seq reads
+- Normalized transcript coverage by degradation indexes
+- Gene length normalization steps for gene KEAP1
+- GC percentage TMM scatter plot
+- Ratio heatmap with hierarchical clustering of genes and patients
 <!---[^5]: https://doi.org/10.1186/s12864-017-3827-y --->
 <!---[^6]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectRnaSeqMetrics --->
 <!---[^7]: https://doi.org/10.1186/1471-2164-15-419 --->
