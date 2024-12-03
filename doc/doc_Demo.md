@@ -53,7 +53,7 @@ plot(log10(norm1[,i]+1), type='l', main="Method 1: Raw value", ylab='')
 plot(log10(norm2[,i]+1), type='l', main="Method 2: Interpolation", ylab='')
 ```
 
-![](Allianceex_v013_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](figures/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 list1 = norm_pileup.list(pileupPath, geneNames=genes, rnum=100, method=1)
@@ -158,4 +158,4 @@ head(result$auc.vec)
 Fitted wCV curves and quality detection using robust z-score and
 projection depth
 
-![](Allianceex_v013_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](figures/unnamed-chunk-14-1.png)<!-- -->
