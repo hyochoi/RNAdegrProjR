@@ -13,8 +13,6 @@ Despite easy storage and cost-effectiveness advantages, formalin-fixed paraffin-
 
 ## Data Processing
 
-`data-raw/DATASET` generates gene and sample information tables and transforms raw read counts.
-
 - Gene information table: combine exon, intron, and transcript level datasets to gene level data.
 - Sample information table: summarize RNA-seq platform, metrics about the alignment of RNA-seq reads, and degradation indexes.
 - Gene expression transformation: normalize raw read counts using FPKM, FPKM-UQ, TPM, and TMM methods
