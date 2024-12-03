@@ -54,6 +54,9 @@ plot(log10(norm2[,i]+1), type='l', main="Method 2: Interpolation", ylab='')
 ```
 
 ![](figures/unnamed-chunk-5-1.png)<!-- -->
+<div align="center">
+  <img width="90%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/unnamed-chunk-5-1.png">
+</div>
 
 ``` r
 list1 = norm_pileup.list(pileupPath, geneNames=genes, rnum=100, method=1)
@@ -159,3 +162,6 @@ Fitted wCV curves and quality detection using robust z-score and
 projection depth
 
 ![](figures/unnamed-chunk-14-1.png)<!-- -->
+<div align="center">
+  <img width="90%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/unnamed-chunk-14-1.png">
+</div>
