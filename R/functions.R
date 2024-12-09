@@ -262,33 +262,15 @@ plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
 #' @import SCISSOR
 #' @export
 
-get_focusPileup <- function(g) {
+get_pileupExon <- function(g) {
 
-  Gene <- genelist[g]
-  load(pileupPath[g])
+  load(file=pileupPath[g])
 
   # Keep exon location of representative transcripts in pileup
-  transcript <- transcriptUsage$ENSTid[which(transcriptUsage$geneSymbol==Gene)]
+  pileupData = SCISSOR::build_pileup(Pileup=pileup, regions=regions, inputType="part_intron", outputType="only_exon")
+  colnames(pileupData) <- colnames(pileup) # to keep the original sample IDs
 
-  if (!is.null(transcript) && length(transcript) > 0 &&
-    !is.null(regionsInfo) && "transcript_id" %in% names(regionsInfo) &&
-    length(regionsInfo$transcript_id) > 0) {
-
-    if (transcript %in% regionsInfo$transcript_id) {
-      regions.transcript <- regionsInfo$region.new[which(regionsInfo$transcript_id == transcript)]
-      Ranges.new <- SCISSOR::get_Ranges(Gene=Gene, regions=regions.transcript, outputType="part_intron")
-      exon.location <- as.character(as.vector(do.call("c", lapply(data.frame(t(Ranges.new$gRanges)), FUN=function(x) x[2]:x[3]))))
-      pileup.primary.rf.exon.only <- pileup[na.omit(match(exon.location,rownames(pileup))), ]
-
-    } else {
-      pileup.primary.rf.exon.only <- matrix(NA, 0, dim(sampleInfo)[1])
-    }
-
-  } else {
-    pileup.primary.rf.exon.only <- matrix(NA, 0, dim(sampleInfo)[1])
-  }
-
-  return(pileup.primary.rf.exon.only)
+  return(pileupData)
 }
 
 
@@ -297,21 +279,20 @@ get_focusPileup <- function(g) {
 #' @param genelist a vector of gene names
 #' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
-#' @param transcriptUsage a representative transcript per gene obtained by StringTie. Transcript and gene level variables are matched.
-#' @param regionsInfo genomic ranges and locus ranges per gene and transcript. Transcript and gene level variables are matched.
 #' @return MCD is a the number of genes x the number of samples matrix.
 #' @import SCISSOR
 #' @export
 
-get_MCD = function(genelist, pileupPath, sampleInfo, transcriptUsage, regionsInfo) {
+get_MCD = function(genelist, pileupPath, sampleInfo) {
 
   # MCD for the g-th gene
-  get_MCD.gene <- function(g) {
+  get_MCD.gene <- function(g){
 
-  if (dim(get_focusPileup(g))[1] > 0) {
-    # Calculate mean of positive values in each sample
-    mcd.vec <- apply(get_focusPileup(g), 2, FUN=function(x) mean(x[x>0], na.rm=TRUE))
-    mcd.vec[match(0, apply(get_focusPileup(g), 2, FUN=function(x) sum(x, na.rm=TRUE)))] <- 0 # 0 vector if all values are 0
+    if (dim(get_pileupExon(g))[1] > 0) {
+      # Use positive values only; if all values are 0 then all stats are 0
+      sum <- apply(get_pileupExon(g), 2, FUN=function(x) sum(x[x>0], na.rm=TRUE))
+      n <- apply(get_pileupExon(g), 2, FUN=function(x) sum(x>0, na.rm=TRUE))
+      mcd.vec <- ifelse(sum<1e-10 | n<1e-10, 0, sum/n) # to adjust NaN, Inf
 
     } else {
       mcd.vec <- rep(NA, dim(sampleInfo)[1])
@@ -332,8 +313,6 @@ get_MCD = function(genelist, pileupPath, sampleInfo, transcriptUsage, regionsInf
 #' @param genelist a vector of gene names
 #' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
-#' @param transcriptUsage a representative transcript per gene obtained by StringTie. Transcript and gene level variables are matched.
-#' @param regionsInfo genomic ranges and locus ranges per gene and transcript. Transcript and gene level variables are matched.
 #' @param rnum the number of regions for uniformly dividing the x-axis for gene length normalization. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @param winSize window size of the rolling window. Default is 20.
@@ -342,23 +321,22 @@ get_MCD = function(genelist, pileupPath, sampleInfo, transcriptUsage, regionsInf
 #' @import SCISSOR zoo
 #' @export
 
-get_wCV = function(genelist, pileupPath, sampleInfo, transcriptUsage, regionsInfo, rnum=100, method=1, winSize=20, egPct=10) {
+get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10) {
 
   # wCV for the g-th gene
-  get_wCV.gene <- function(g, rnum=rnum, method=method, winSize=winSize, egPct=egPct) {
+  get_wCV.gene <- function(g, rnum=rnum, method=method, winSize=winSize, egPct=egPct){
 
-  if (dim(get_focusPileup(g))[1] > 0) {
-    # Log transform and normalization
-    norm.log.pileup.primary.rf.exon.only <- norm_pileup.gene(log10(get_focusPileup(g)+1), rnum=rnum, method=method)
+    if (dim(get_pileupExon(g))[1] > 0) {
+      # Normalization
+      norm.pileup.primary.rf.exon.only <- norm_pileup.gene(get_pileupExon(g), rnum=rnum, method=method)
 
-    # Rolling CV in each sample
-    rmean <- apply(norm.log.pileup.primary.rf.exon.only, 2, FUN=function(x) zoo::rollmean(x, winSize))
-    rsd <- apply(norm.log.pileup.primary.rf.exon.only, 2, FUN=function(x) zoo::rollapply(x, winSize, FUN=sd))
-    cv.mat <- rsd / rmean
+      # Rolling CV in each sample
+      rmean <- apply(norm.pileup.primary.rf.exon.only, 2, FUN=function(x) zoo::rollmean(x, winSize))
+      rsd <- apply(norm.pileup.primary.rf.exon.only, 2, FUN=function(x) zoo::rollapply(x, winSize, FUN=sd))
+      cv.mat <- ifelse(rmean<1e-10 | rsd<1e-10, 0, rsd/rmean) # to adjust NaN, Inf
 
-    # 0-adjusted trimmed mean
-    wcv.vec <- apply(cv.mat, 2, FUN=function(x) mean(x[x>0], na.rm=TRUE, trim=egPct/100))
-    wcv.vec[match(0, apply(cv.mat, 2, FUN=function(x) sum(x, na.rm=TRUE)))] <- 0 # 0 vector if all values are 0
+      # 0-adjusted trimmed mean
+      wcv.vec <- apply(cv.mat, 2, FUN=function(x) mean(x[x>0], na.rm=TRUE, trim=egPct/100))
 
     } else {
       wcv.vec <- rep(NA, dim(sampleInfo)[1])
@@ -378,34 +356,49 @@ get_wCV = function(genelist, pileupPath, sampleInfo, transcriptUsage, regionsInf
 #'
 #' @param MCD a mean coverage depth is a the number of genes x the number of samples matrix.
 #' @param wCV a window coefficient of variation is a the number of genes x the number of samples matrix.
-#' @param fltPct filter percent (one-side) to filter genes by mean of MCD. Default is 30.
 #' @param rstPct restricted percent (one-side) to restrict genes by log transformed MC. Default is 10.
 #' @return a vector with SQI and a coordinate matrix by log transformed MCD, wCV, and smoothed wCV.
-#' @import stats DescTools
+#' @import stats DescTools dplyr
 #' @export
 
-get_SQI = function(MCD, wCV, fltPct=30, rstPct=10) {
+get_SQI = function(MCD, wCV, rstPct=10, cutoff=3) {
 
   auc.coord <- na.omit(data.frame(Gene=rep(rownames(MCD), ncol(MCD)),
                                   Sample=rep(colnames(MCD), each=nrow(MCD)),
                                   MCD=as.vector(MCD),
-                                  wCV=as.vector(wCV),
-                                  MCDmean=rep(apply(MCD, 1, mean), ncol(MCD)))) %>%
-    filter(MCDmean>=quantile(MCDmean, probs=fltPct/100, na.rm=TRUE)) %>% # filtered gene
+                                  wCV=as.vector(wCV))) %>%
     group_by(Sample) %>%
-    mutate(log10_MCD1=log10(MCD+1),
-           smoothed=predict(stats::loess(wCV~log10_MCD1, span=0.5))) %>% # LOESS regression
-    arrange(Sample, log10_MCD1) # sort x-points for AUC
+    mutate(xMCD=log10(MCD+1)) %>%
+    arrange(Sample, xMCD) # sort x-points for AUC
 
-  auc.vec <- auc.coord %>%
-    filter(MCD>=quantile(MCD, probs=rstPct/100, na.rm=TRUE) & MCD<quantile(MCD, probs=1-rstPct/100, na.rm=TRUE)) %>% # restricted MCD
+  # LOESS regression
+  p <- ggplot(auc.coord, aes(x = xMCD, y = wCV)) +
+    geom_smooth(data = auc.coord, aes(group=Sample), method = "loess", span = 0.5, se = FALSE)
+  smoothData <- ggplot_build(p)$data[[1]]
+
+  # Map back to original group
+  group_mapping <- auc.coord %>%
+    distinct(Sample)
+  group_mapping$group_id <- as.numeric(factor(group_mapping$Sample))
+  smoothData <- smoothData %>%
+    mutate(Sample = group_mapping$Sample[group])
+
+  # Restricted MCD
+  rangeMin = log10(quantile(MCD, probs=rstPct/100, na.rm=TRUE)+1)
+  rangeMax = log10(quantile(MCD, probs=1-rstPct/100, na.rm=TRUE)+1)
+
+  auc.vec <- smoothData %>%
+    filter(x>=rangeMin & x<rangeMax) %>%
     group_by(Sample) %>%
-    summarise(AUC=DescTools::AUC(log10_MCD1, smoothed, method="spline")) %>% # calculate AUC
-    mutate(zScore=(AUC-median(AUC))/mad(AUC), # robust z-score
-           SQI=ifelse(abs(zScore)>3, "Bad", "Good")) # outlier detection
+    summarise(AUC=DescTools::AUC(x, y, method="spline")) %>% # Calculate AUC
+    mutate(zScore=(AUC-median(AUC))/mad(AUC), # Robust z-score
+           PD=SCISSOR::pd.rate.hy(AUC, qrsc=TRUE), # Projection depth
+           SQI.zScore=ifelse(zScore>cutoff, "Bad", "Good"),
+           SQI.PD=ifelse(PD>cutoff, "Bad", "Good"))
 
-  auc.coord <- auc.coord %>%
+  auc.coord <- smoothData %>%
+    select(x, y, Sample) %>%
     inner_join(auc.vec, by="Sample")
 
-  return(list(auc.vec=auc.vec, auc.coord=auc.coord))
+  return(list(auc.vec=auc.vec, auc.coord=auc.coord, rangeMCD=c(rangeMin, rangeMax)))
 }
