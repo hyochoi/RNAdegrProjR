@@ -13,7 +13,7 @@
 - Method 2: find geometric mean (blue points) using read depth at odd points (red points).
   - We recommend using the gene length normalization methods for gene length is at least 201 (2*the number of regions+1) where the number of regions is 100.
 <div align="center">
-  <img width="60%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/images/norm_pileup_methods2.png">
+  <img width="60%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/norm_pileup_methods2.png">
 </div>
 
 
