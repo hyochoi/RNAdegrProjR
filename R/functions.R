@@ -418,7 +418,7 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
 }
 
 
-#' Plot a sample quality index (SQI) outputs
+#' Plot sample quality index (SQI) outputs
 #'
 #' @param SQIresult outputs from get_SQI function
 #' @return figures for the distribution of SQI by PD; and the relation of wCV and MCD.
