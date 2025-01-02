@@ -447,7 +447,7 @@ plot_SQI = function(SQIresult) {
     geom_boxplot(width=0.25, outlier.shape=NA, alpha=0.5) +
     scale_fill_manual(values=c(rep("grey", 2))) +
     scale_color_identity() +
-    labs(x = "", y = "", fill = "", title = "") +
+    labs(x="", y="", fill="", title="") +
     guides(fill=guide_legend(nrow=1, byrow=TRUE))+
     theme(legend.position = "none",
           legend.margin = margin(-5, 0, 0, 0),
@@ -463,18 +463,18 @@ plot_SQI = function(SQIresult) {
     geom_rect(data=tibble::tibble(x1=rangeMCD[1], x2=rangeMCD[2], y1=-Inf, y2=+Inf),
               inherit.aes=FALSE,
               mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2),
-              color = "transparent",
-              fill = "blue",
-              alpha = .07) +
+              color="transparent",
+              fill="blue",
+              alpha=0.07) +
     xlab(expression(paste(log[10], "(MCD+1)"))) + ylab("wCV") +
     guides(size="none") +
     theme(axis.text=element_text(size=25),
           axis.title=element_text(size=25),
-          legend.title=element_text(size=18, face = "bold"),
-          legend.position = c(0.85, 0.85),
+          legend.title=element_text(size=18, face="bold"),
+          legend.position=c(0.85, 0.85),
           legend.background=element_rect(colour=NA, fill=NA),
           legend.text=element_text(size=18),
-          panel.background = element_rect(fill="gray97"))
+          panel.background=element_rect(fill="gray97"))
 
   ggpubr::ggarrange(d, p, nrow=1, ncol=2, align="h")
 }
