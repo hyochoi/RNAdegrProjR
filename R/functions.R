@@ -49,6 +49,7 @@ norm_pileup.spl = function(pileup, rnum=100, method=1) {
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a rnum x the number of samples matrix.
 #' @references https://github.com/hyochoi/SCISSOR
+#' @import parallel
 #' @export
 
 norm_pileup.gene = function(pileupData, rnum=100, method=1) {
@@ -281,7 +282,7 @@ get_pileupExon = function(g, pileupPath) {
 #' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
 #' @return MCD is a the number of genes x the number of samples matrix.
-#' @import SCISSOR
+#' @import SCISSOR parallel
 #' @export
 
 get_MCD = function(genelist, pileupPath, sampleInfo) {
@@ -318,7 +319,7 @@ get_MCD = function(genelist, pileupPath, sampleInfo) {
 #' @param winSize window size of the rolling window. Default is 20.
 #' @param egPct edge percent (one-side) to calculate the trimmed mean. Default is 10.
 #' @return wCV is a the number of genes x the number of samples matrix.
-#' @import SCISSOR zoo
+#' @import SCISSOR zoo parallel
 #' @export
 
 get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10) {
@@ -370,9 +371,10 @@ get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSiz
 #'
 #' @param MCD a mean coverage depth is a the number of genes x the number of samples matrix.
 #' @param wCV a window coefficient of variation is a the number of genes x the number of samples matrix.
-#' @param rstPct restricted percent (one-side) to restrict genes by log transformed MC. Default is 10.
-#' @return a vector with SQI and a coordinate matrix by log transformed MCD, wCV, and smoothed wCV.
-#' @import stats DescTools dplyr
+#' @param rstPct restricted percent (one-side) to restrict genes by log transformed MC. Default is 20.
+#' @param obsPct span includes the percent of observations in each local regression. Default is 50.
+#' @return a vector with SQI per sample; a coordinate matrix of smoothed data; and a range of MCD.
+#' @import ggplot2 DescTools SCISSOR tidyverse
 #' @export
 
 get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
@@ -413,4 +415,66 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
     inner_join(auc.vec, by="Sample")
 
   return(list(auc.vec=auc.vec, auc.coord=auc.coord, rangeMCD=c(rangeMin, rangeMax)))
+}
+
+
+#' Plot a sample quality index (SQI) outputs
+#'
+#' @param SQIresult outputs from get_SQI function
+#' @return figures for the distribution of SQI by PD; and the relation of wCV and MCD.
+#' @references https://jtr13.github.io/cc21fall2/raincloud-plot-101-density-plot-or-boxplotwhy-not-do-both.html
+#' @import ggplot2 tidyverse scales tibble ggpubr
+#' @export
+
+plot_SQI = function(SQIresult) {
+
+  auc.vec2 <- result$auc.vec[, c("AUC", "PD")]
+  auc.coord <- result$auc.coord
+  rangeMCD <- result$rangeMCD
+  df <- data.frame(var=rep(colnames(auc.vec2), each=nrow(auc.vec2)),
+                   value=as.vector(as.matrix(auc.vec2)))
+  df$var <- factor(df$var, levels=rev(colnames(auc.vec2)), ordered=TRUE)
+
+  # Distribution of SQI by PD
+  d <- df %>%
+    ggplot(aes(x=var, y=value, fill=var)) +
+    geom_flat_violin(position=position_nudge(x=0.2), alpha=0.4) +
+    geom_point(aes(color=case_when(
+      var=="AUC" ~ "grey",
+      var=="PD" & value>3 ~ "red",
+      var=="PD" & value<=3 ~ "darkgreen")),
+      position=position_jitter(w=0.15, seed=12345), size=1.5, alpha=0.5, show.legend=F) +
+    geom_boxplot(width=0.25, outlier.shape=NA, alpha=0.5) +
+    scale_fill_manual(values=c(rep("grey", 2))) +
+    scale_color_identity() +
+    labs(x = "", y = "", fill = "", title = "") +
+    guides(fill=guide_legend(nrow=1, byrow=TRUE))+
+    theme(legend.position = "none",
+          legend.margin = margin(-5, 0, 0, 0),
+          panel.background=element_rect(fill="gray97"),
+          axis.text=element_text(size=25),
+          axis.title=element_text(size=25)) +
+    coord_flip()
+
+  # Relation of wCV and MCD
+  p <- ggplot(auc.coord, aes(x=x, y=y, group=Sample, color=SQI)) +
+    geom_line(size=1) +
+    scale_color_manual(values=c("Bad"=scales::alpha("red", 0.5), "Good"=scales::alpha("darkgreen", 0.5))) + # SQI per sample
+    geom_rect(data=tibble::tibble(x1=rangeMCD[1], x2=rangeMCD[2], y1=-Inf, y2=+Inf),
+              inherit.aes=FALSE,
+              mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2),
+              color = "transparent",
+              fill = "blue",
+              alpha = .07) +
+    xlab(expression(paste(log[10], "(MCD+1)"))) + ylab("wCV") +
+    guides(size="none") +
+    theme(axis.text=element_text(size=25),
+          axis.title=element_text(size=25),
+          legend.title=element_text(size=18, face = "bold"),
+          legend.position = c(0.85, 0.85),
+          legend.background=element_rect(colour=NA, fill=NA),
+          legend.text=element_text(size=18),
+          panel.background = element_rect(fill="gray97"))
+
+  ggpubr::ggarrange(d, p, nrow=1, ncol=2, align="h")
 }
