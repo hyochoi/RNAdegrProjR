@@ -449,8 +449,8 @@ plot_SQI = function(SQIresult) {
     scale_color_identity() +
     labs(x="", y="", fill="", title="") +
     guides(fill=guide_legend(nrow=1, byrow=TRUE))+
-    theme(legend.position = "none",
-          legend.margin = margin(-5, 0, 0, 0),
+    theme(legend.position="none",
+          legend.margin=margin(-5, 0, 0, 0),
           panel.background=element_rect(fill="gray97"),
           axis.text=element_text(size=25),
           axis.title=element_text(size=25)) +
