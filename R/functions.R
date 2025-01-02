@@ -53,14 +53,14 @@ norm_pileup.spl = function(pileup, rnum=100, method=1) {
 
 norm_pileup.gene = function(pileupData, rnum=100, method=1) {
 
-  if (method==1 | method==2) {
-    # Method 1: Raw value
-    # Method 2: Interpolation
-    normmat.gene = apply(pileupData, 2, FUN=function(x) norm_pileup.spl(pileup=x, rnum=rnum, method=method))
-
-  } else {
-    stop(method," is not an option for method.")
+  if (!(method %in% c(1, 2))) {
+    stop(method, " is not an option for method.")
   }
+
+  normmat.gene <- do.call(cbind, parallel::mclapply(seq_len(ncol(pileupData)), function(i) {
+    norm_pileup.spl(pileup=pileupData[, i], rnum=rnum, method=method)
+  }, mc.cores=parallel::detectCores()/2))
+  colnames(normmat.gene) <- colnames(pileupData)
 
   return(normmat.gene)
 }
@@ -258,15 +258,16 @@ plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
 #' Get a focused pileup of exon location for the g-th gene
 #'
 #' @param g the gene order in genelist
+#' @param pileupPath file paths of coverage pileupData including .RData file names                                                     
 #' @return a focused pileup is a the number of exon locations x the number of samples matrix for the g-th gene.
 #' @import SCISSOR
 #' @export
 
-get_pileupExon <- function(g) {
+get_pileupExon = function(g, pileupPath) {
 
   load(file=pileupPath[g])
 
-  # Keep exon location of representative transcripts in pileup
+  # Keep exon location of union transcripts in pileup
   pileupData = SCISSOR::build_pileup(Pileup=pileup, regions=regions, inputType="part_intron", outputType="only_exon")
   colnames(pileupData) <- colnames(pileup) # to keep the original sample IDs
 
@@ -284,27 +285,26 @@ get_pileupExon <- function(g) {
 #' @export
 
 get_MCD = function(genelist, pileupPath, sampleInfo) {
+  cl <- makeCluster(parallel::detectCores()-1)
+  registerDoParallel(cl)
+  on.exit(stopCluster(cl), add=TRUE)
 
-  # MCD for the g-th gene
-  get_MCD.gene <- function(g){
-
-    if (dim(get_pileupExon(g))[1] > 0) {
-      # Use positive values only; if all values are 0 then all stats are 0
-      sum <- apply(get_pileupExon(g), 2, FUN=function(x) sum(x[x>0], na.rm=TRUE))
-      n <- apply(get_pileupExon(g), 2, FUN=function(x) sum(x>0, na.rm=TRUE))
-      mcd.vec <- ifelse(sum<1e-10 | n<1e-10, 0, sum/n) # to adjust NaN, Inf
-
-    } else {
-      mcd.vec <- rep(NA, dim(sampleInfo)[1])
+  MCD <- foreach(g=1:length(pileupPath), .combine=rbind, .packages=c("SCISSOR"), .export=c("get_pileupExon")) %dopar%
+    {
+      pileupData = get_pileupExon(g, pileupPath)
+      if (nrow(pileupData) > 0) {
+        # Use positive values only; if all values are 0 then all stats are 0
+        sum <- colSums(pmax(pileupData, 0), na.rm=TRUE)
+        n <- colSums(pileupData>0, na.rm=TRUE)
+        ifelse(sum<1e-10 | n<1e-10, 0, sum/n) # to adjust NaN, Inf
+      } else {
+        rep(NA, nrow(sampleInfo))
+      }
     }
-
-    return(mcd.vec)
-  }
-
-  MCD <- do.call(rbind, lapply(1:length(pileupPath), get_MCD.gene))
   rownames(MCD) <- genelist
 
   return(MCD)
+  stopCluster(cl)
 }
 
 
@@ -321,37 +321,51 @@ get_MCD = function(genelist, pileupPath, sampleInfo) {
 #' @import SCISSOR zoo
 #' @export
 
-get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10) {
+get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10) {
 
-  # wCV for the g-th gene
-  get_wCV.gene <- function(g, rnum=rnum, method=method, winSize=winSize, egPct=egPct){
-
-    if (dim(get_pileupExon(g))[1] > 0) {
-      # Normalization
-      norm.pileup.primary.rf.exon.only <- norm_pileup.gene(get_pileupExon(g), rnum=rnum, method=method)
-
-      # Rolling CV in each sample
-      rmean <- apply(norm.pileup.primary.rf.exon.only, 2, FUN=function(x) zoo::rollmean(x, winSize))
-      rsd <- apply(norm.pileup.primary.rf.exon.only, 2, FUN=function(x) zoo::rollapply(x, winSize, FUN=sd))
-      cv.mat <- ifelse(rmean<1e-10 | rsd<1e-10, 0, rsd/rmean) # to adjust NaN, Inf
-
-      # 0-adjusted trimmed mean
-      wcv.vec <- apply(cv.mat, 2, FUN=function(x) mean(x[x>0], na.rm=TRUE, trim=egPct/100))
-
-    } else {
-      wcv.vec <- rep(NA, dim(sampleInfo)[1])
-    }
-
-    return(wcv.vec)
+  if (!(2<=winSize && winSize<=rnum)) {
+    stop("The window size ", winSize, " should be in [2, ", rnum, "].")
   }
 
-  wCV <- do.call(rbind, lapply(1:length(pileupPath), FUN=function(x) get_wCV.gene(x, rnum=rnum, method=method, winSize=winSize, egPct=egPct)))
+  cl <- makeCluster(parallel::detectCores()-1)
+  registerDoParallel(cl)
+  on.exit(stopCluster(cl), add=TRUE)
+
+  wCV <- foreach(g=1:length(pileupPath), .combine=rbind, .packages = c("SCISSOR", "zoo", "parallel"), .export = c("get_pileupExon", "norm_pileup.gene", "norm_pileup.spl")) %dopar%
+    {
+      pileupData = get_pileupExon(g, pileupPath)
+      if (nrow(pileupData) > 0) {
+        # Normalization
+        norm_pileup = norm_pileup.gene(pileupData, rnum=rnum, method=method)
+
+        # Rolling CV in each sample
+        rmean <- zoo::rollmean(norm_pileup, winSize, fill=NA, align="center", by.column=TRUE)
+        rsd <- zoo::rollapply(norm_pileup, winSize, sd, fill=NA, align="center", by.column=TRUE)
+        cv.mat <- ifelse(rmean<1e-10 | rsd<1e-10, 0, rsd/rmean) # to adjust NaN, Inf
+
+        # 0-adjusted trimmed mean
+        trmean_col <- function(column, trimFrac) {
+          posVals <- column[column>0]
+          ifelse(all(is.na(posVals)), NA, mean(posVals, na.rm=TRUE, trim=trimFrac))
+        }
+
+        wcv.vec <- unlist(parallel::mclapply(seq_len(ncol(cv.mat)), function(i) {
+          trmean_col(cv.mat[, i], egPct/100)
+        }, mc.cores=parallel::detectCores()/2))
+        names(wcv.vec) <- colnames(cv.mat)
+        wcv.vec
+
+      } else {
+        rep(NA, nrow(sampleInfo))
+      }
+    }
   rownames(wCV) <- genelist
 
   return(wCV)
+  stopCluster(cl)
 }
 
-
+                                                     
 #' Get a sample quality index (SQI) for samples
 #'
 #' @param MCD a mean coverage depth is a the number of genes x the number of samples matrix.
@@ -361,19 +375,18 @@ get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize
 #' @import stats DescTools dplyr
 #' @export
 
-get_SQI = function(MCD, wCV, rstPct=10, cutoff=3) {
+get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
 
   auc.coord <- na.omit(data.frame(Gene=rep(rownames(MCD), ncol(MCD)),
                                   Sample=rep(colnames(MCD), each=nrow(MCD)),
                                   MCD=as.vector(MCD),
                                   wCV=as.vector(wCV))) %>%
-    group_by(Sample) %>%
     mutate(xMCD=log10(MCD+1)) %>%
     arrange(Sample, xMCD) # sort x-points for AUC
 
   # LOESS regression
-  p <- ggplot(auc.coord, aes(x = xMCD, y = wCV)) +
-    geom_smooth(data = auc.coord, aes(group=Sample), method = "loess", span = 0.5, se = FALSE)
+  p <- ggplot(auc.coord, aes(x=xMCD, y=wCV)) +
+    geom_smooth(data=auc.coord, aes(group=Sample), method="loess", span=obsPct/100, se=FALSE)
   smoothData <- ggplot_build(p)$data[[1]]
 
   # Map back to original group
@@ -383,18 +396,17 @@ get_SQI = function(MCD, wCV, rstPct=10, cutoff=3) {
   smoothData <- smoothData %>%
     mutate(Sample = group_mapping$Sample[group])
 
-  # Restricted MCD
-  rangeMin = log10(quantile(MCD, probs=rstPct/100, na.rm=TRUE)+1)
-  rangeMax = log10(quantile(MCD, probs=1-rstPct/100, na.rm=TRUE)+1)
+  # Range of MCD
+  posMCD <- MCD[MCD>0]
+  rangeMin = log10(quantile(posMCD, probs=rstPct/100, na.rm=TRUE)+1)
+  rangeMax = log10(quantile(posMCD, probs=1-rstPct/100, na.rm=TRUE)+1)
 
   auc.vec <- smoothData %>%
-    filter(x>=rangeMin & x<rangeMax) %>%
+    filter(x>=rangeMin & x<rangeMax) %>% # restricted MCD
     group_by(Sample) %>%
-    summarise(AUC=DescTools::AUC(x, y, method="spline")) %>% # Calculate AUC
-    mutate(zScore=(AUC-median(AUC))/mad(AUC), # Robust z-score
-           PD=SCISSOR::pd.rate.hy(AUC, qrsc=TRUE), # Projection depth
-           SQI.zScore=ifelse(zScore>cutoff, "Bad", "Good"),
-           SQI.PD=ifelse(PD>cutoff, "Bad", "Good"))
+    summarise(AUC=DescTools::AUC(x, y, method="spline")) %>% # calculate AUC
+    mutate(PD=SCISSOR::pd.rate.hy(AUC, qrsc=TRUE), # projection depth
+           SQI=ifelse(PD>3, "Bad", "Good")) # outlier detection
 
   auc.coord <- smoothData %>%
     select(x, y, Sample) %>%
