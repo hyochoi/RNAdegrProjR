@@ -124,7 +124,7 @@ norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
 scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE) {
 
   # Gene length normalization
-  normlist = norm_pileup.list(path, genes, rnum=rnum, method=method)
+  normlist = norm_pileup.list(pileupPath, geneNames=NULL, rnum=rnum, method=method)
 
   # Log-transformation
   log.normlist = lapply(normlist, FUN=function(x) log10(x+1))
