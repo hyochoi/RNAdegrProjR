@@ -104,3 +104,17 @@ repmat = function(X, m, n){
   nx = dim(X)[2]
   matrix(t(matrix(X, mx, nx*n)), mx*m, nx*n, byrow=T)
 }
+
+                      
+#' Adjust y-axis for a plot
+#'
+#' @references https://github.com/hyochoi/SCISSOR/blob/master/R/yaxis.hy.R
+#' @export
+
+yaxis.hy <- function(mat){
+  #  mat : d by n matrix
+  tempmax <- max(mat) ;
+  tempmin <- min(mat) ;
+  templen <- tempmax-tempmin ;
+  return(c(tempmin-0.002*templen, tempmax+0.002*templen)) ;
+}
