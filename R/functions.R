@@ -387,7 +387,7 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
     arrange(Sample, xMCD) # sort x-points for AUC
 
   # LOESS regression
-  p <- ggplot(auc.coord, aes(x=xMCD, y=wCV)) +
+  p <- ggplot2::ggplot(auc.coord, aes(x=xMCD, y=wCV)) +
     geom_smooth(data=auc.coord, aes(group=Sample), method="loess", span=obsPct/100, se=FALSE)
   smoothData <- ggplot_build(p)$data[[1]]
 
@@ -437,7 +437,7 @@ plot_SQI = function(SQIresult) {
 
   # Distribution of SQI by PD
   d <- df %>%
-    ggplot(aes(x=var, y=value, fill=var)) +
+    ggplot2::ggplot(aes(x=var, y=value, fill=var)) +
     geom_flat_violin(position=position_nudge(x=0.2), alpha=0.4) +
     geom_point(aes(color=case_when(
       var=="AUC" ~ "grey",
@@ -457,7 +457,7 @@ plot_SQI = function(SQIresult) {
     coord_flip()
 
   # Relation of wCV and MCD
-  p <- ggplot(auc.coord, aes(x=x, y=y, group=Sample, color=SQI)) +
+  p <- ggplot2::ggplot(auc.coord, aes(x=x, y=y, group=Sample, color=SQI)) +
     geom_line(size=1) +
     scale_color_manual(values=c("Bad"=scales::alpha("red", 0.5), "Good"=scales::alpha("darkgreen", 0.5))) + # SQI per sample
     geom_rect(data=tibble::tibble(x1=rangeMCD[1], x2=rangeMCD[2], y1=-Inf, y2=+Inf),
