@@ -1,4 +1,30 @@
 ## -------------------------------------------------
+## Build Coverage Pileup
+## -------------------------------------------------
+
+#' Get a focused pileup of exon location for the g-th gene
+#'
+#' @param g the gene order in genelist
+#' @param pileupPath file paths of coverage pileupData including .RData file names                                                     
+#' @return a focused pileup is a the number of exon locations x the number of samples matrix for the g-th gene.
+#' @import SCISSOR
+#' @export
+
+get_pileupExon = function(g, pileupPath) {
+
+  load(file=pileupPath[g])
+
+  # Keep exon location of union transcripts in pileup
+  pileupData = SCISSOR::build_pileup(Pileup=pileup, regions=regions, inputType="part_intron", outputType="only_exon")
+  colnames(pileupData) <- colnames(pileup) # to keep the original sample IDs
+
+  return(pileupData)
+}
+
+
+
+
+## -------------------------------------------------
 ## Gene Length Normalization
 ## -------------------------------------------------
 
@@ -91,7 +117,7 @@ norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
     pileupList <- list()
     for (g in 1:length(pileupPath)){
       pileupList[[g]] <- list()
-      pileupList[[g]] <- miceadds::load.Rdata2(basename(pileupPath[g]), path=dirname(pileupPath[g]))
+      pileupList[[g]] <- get_pileupExon(g, pileupPath)
     }
     if (method==1 | method==2) {
       # Method 1: Raw value
@@ -255,26 +281,6 @@ plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
 ## -------------------------------------------------
 ## Sample Quality Index
 ## -------------------------------------------------
-
-#' Get a focused pileup of exon location for the g-th gene
-#'
-#' @param g the gene order in genelist
-#' @param pileupPath file paths of coverage pileupData including .RData file names                                                     
-#' @return a focused pileup is a the number of exon locations x the number of samples matrix for the g-th gene.
-#' @import SCISSOR
-#' @export
-
-get_pileupExon = function(g, pileupPath) {
-
-  load(file=pileupPath[g])
-
-  # Keep exon location of union transcripts in pileup
-  pileupData = SCISSOR::build_pileup(Pileup=pileup, regions=regions, inputType="part_intron", outputType="only_exon")
-  colnames(pileupData) <- colnames(pileup) # to keep the original sample IDs
-
-  return(pileupData)
-}
-
 
 #' Get a mean coverage depth (MCD) for genes and samples
 #'
