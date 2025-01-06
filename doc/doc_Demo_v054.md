@@ -48,7 +48,7 @@ print(GAP$plot)
 ```
 ![](figures/Allianceex_GAP_v054.png)<!-- -->
 <div align="center">
-  <img width="90%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GAP_v054.png">
+  <img width="40%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GAP_v054.png">
 </div>
 
 ## Gene Body Coverage
@@ -103,7 +103,7 @@ ggpubr::ggarrange(p, p0, p5, labels=c("A", "B", "C"), common.legend=TRUE, legend
 ```
 ![](figures/Allianceex_GBC_v054.png)<!-- -->
 <div align="center">
-  <img width="90%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v054.png">
+  <img width="100%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v054.png">
 </div>
 
 ``` r
@@ -153,7 +153,7 @@ plot_SQI(SQIresult=result)
 ```
 ![](figures/Allianceex_SQI_v054.png)<!-- -->
 <div align="center">
-  <img width="90%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_SQI_v054.png">
+  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_SQI_v054.png">
 </div>
 
 Update gene body coverage with good quality samples
@@ -173,5 +173,5 @@ ggpubr::ggarrange(pg, p0g, p5g, labels=c("D", "E", "F"), common.legend=TRUE, leg
 ```
 ![](figures/Allianceex_GBCg_v054.png)<!-- -->
 <div align="center">
-  <img width="90%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBCg_v054.png">
+  <img width="100%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBCg_v054.png">
 </div>
