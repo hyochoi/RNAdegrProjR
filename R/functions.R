@@ -1,11 +1,7 @@
-## -------------------------------------------------
-## Build Coverage Pileup
-## -------------------------------------------------
-
 #' Get a focused pileup of exon location for the g-th gene
 #'
 #' @param g the gene order in genelist
-#' @param pileupPath file paths of coverage pileupData including .RData file names                                                     
+#' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @return a focused pileup is a the number of exon locations x the number of samples matrix for the g-th gene.
 #' @import SCISSOR
 #' @export
@@ -22,6 +18,69 @@ get_pileupExon = function(g, pileupPath) {
 }
 
 
+#' Plot genome alignment profiles
+#'
+#' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
+#' @param plot TRUE/FALSE turns on/off the genome alignment profiles plot. Default is TRUE.
+#' @return a matrix and a plot, or a matrix for the percentages of sample properties where plot is TRUE or FALSE, respectively.
+#' @import tidyverse dplyr ggplot2
+#' @export
+
+plot_GAP = function(sampleInfo, plot=TRUE) {
+
+  # Calculate the percentages
+  PCTmat0 <- sampleInfo %>%
+    mutate(Unaligned=PF_BASES-PF_ALIGNED_BASES) %>%
+    select(Unaligned, RIBOSOMAL_BASES, CODING_BASES, UTR_BASES, INTRONIC_BASES, INTERGENIC_BASES)
+
+  PCTmat <- PCTmat0 %>%
+    mutate(SUM=apply(PCTmat0, 1, sum),
+           PCT_Unaligned=(Unaligned/SUM)*100,
+           PCT_Intergenic=(INTERGENIC_BASES/SUM)*100,
+           PCT_Intronic=(INTRONIC_BASES/SUM)*100,
+           PCT_Coding.UTR=((CODING_BASES+UTR_BASES)/SUM)*100) %>%
+    select(PCT_Unaligned, PCT_Intergenic, PCT_Intronic, PCT_Coding.UTR)
+
+  PCTdf <- data.frame(grp=rep(c("Unaligned", "Intergenic", "Intronic", "Coding+UTR"), each=nrow(PCTmat)),
+                      PCT=unlist(as.vector(PCTmat)))
+
+  if (plot) {
+    PCTdf$grp <- factor(PCTdf$grp, levels=c("Unaligned", "Intergenic", "Intronic", "Coding+UTR"), ordered=TRUE)
+
+    p <- ggplot2::ggplot(PCTdf, aes(x=grp, y=PCT, color=grp)) +
+      scale_colour_brewer(palette="Dark2") +
+      geom_violin(position=position_dodge(width=0.9)) +
+      geom_point(position=position_jitterdodge(seed=12345, dodge.width=0.9), alpha=0.4, shape=16, size=1) +
+      stat_summary(fun=mean, geom="crossbar", width=0.5, position=position_dodge(width=0.9)) +
+      labs(title="",x="", y="") +
+      scale_x_discrete(limits=c("Unaligned", "Intergenic", "Intronic", "Coding+UTR")) +
+      guides(colour=guide_legend(title="",nrow=1,byrow=TRUE)) +
+      theme(legend.position="bottom",
+            panel.background = element_rect(fill="gray97"))
+    # print(p)
+  }
+
+  return(list(PCTmat=PCTmat, plot=p))
+}
+
+
+#' Filter low expressed genes
+#'
+#' @param genelist a vector of gene names
+#' @param TPM a gene expression counts matrix transformed by TPM
+#' @param thru threshold. Default is 5.
+#' @param pct percent. Default is 50.
+#' @return a vector of filtered gene names
+#' @export
+
+filter_lowExpGenes = function(genelist, TPM, thru=5, pct=50) {
+
+  TPM.proteincoding <- na.omit(TPM[match(genelist, rownames(TPM)), ])
+  rows_to_keep <- apply(TPM.proteincoding, 1, function(row) {mean(row<thru) < pct/100})
+  genelist2 <- rownames(TPM.proteincoding[rows_to_keep, , drop=FALSE])
+
+  return(genelist2)
+}
 
 
 ## -------------------------------------------------
@@ -101,7 +160,7 @@ norm_pileup.gene = function(pileupData, rnum=100, method=1) {
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a rnum x the number of samples matrix at each gene list.
 #' @references https://github.com/hyochoi/SCISSOR
-#' @import miceadds
+#' @import
 #' @export
 
 norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
@@ -219,7 +278,7 @@ get_metrics = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
 }
 
 
-#' Plot normalized transcript coverage using gene length normalization
+#' Plot gene body coverage
 #'
 #' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @param geneNames gene names per file. If NULL, Gene i with the same length of pileupPath be set. Default is NULL.
@@ -228,54 +287,98 @@ get_metrics = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
 #' @param scale TRUE/FALSE returns the scaled/unscaled normalized transcript coverage. Default is TRUE.
 #' @param stat 1 and 2 return median and mean normalized coverage curves per sample, respectively. Default is 1.
 #' @param plot TRUE/FALSE turns on/off the normalized transcript coverage plot. Default is TRUE.
-#' @return a matrix and a plot, or a matrix for the normalized transcript coverage where plot is TRUE or FALSE, respectively.
-#' @references https://github.com/hyochoi/SCISSOR
-#' @import ggplot2
+#' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
+#' @return a matrix and a plot, or a matrix for the gene body coverage where plot is TRUE or FALSE, respectively.
+#' @import tidyverse dplyr RColorBrewer ggplot2 matrixStats
 #' @export
 
-plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE, stat=1, plot=TRUE) {
+plot_GBC = function(pileupPath, geneNames, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo) {
 
   scale.log.normlist = scale_pileup.list(pileupPath, geneNames, rnum=rnum, method=method, scale=TRUE)
-
-  scale.geomedian <- as.matrix(apply(simplify2array(scale.log.normlist), 1:2, median)) # a rnum x the number of samples matrix
-  scale.geomean <- as.matrix(apply(simplify2array(scale.log.normlist), 1:2, mean)) # a rnum x the number of samples matrix
-
-  vec.scale.geomedian = convert_pivot.longer(scale.geomedian, c("region", "sample", "scale.geomedian"))
-  vec.scale.geomean = convert_pivot.longer(scale.geomean, c("region", "sample", "scale.geomean"))
-
-  pair <- substr(vec.scale.geomedian$sample, start=14, stop=16)
-  df <- data.frame(pair, vec.scale.geomedian, vec.scale.geomean[,c("scale.geomean")])
-  normTC <- convert_Chr2Numcol(df, 2)
+  scale.arr <- simplify2array(scale.log.normlist)
 
   if (stat==1) {
     # Stat 1: Median curve per sample
-    normTC1 <- normTC[,c("region", "sample", "pair", "scale.geomedian")]
+    scale.geom <- matrix(matrixStats::rowMedians(matrix(scale.arr, nrow=prod(dim(scale.arr)[1:2]), ncol=dim(scale.arr)[3])), nrow=dim(scale.arr)[1])
 
   } else if (stat==2) {
     # Stat 2: Mean curve per sample
-    normTC1 <- normTC[,c("region", "sample", "pair", "scale.geomean")]
+    scale.geom <- rowMeans(scale.arr, dims=2)
 
   } else {
     stop(stat," is not an option for stat.")
   }
 
+  rownames(scale.geom) <- c(seq_len(rnum))
+  colnames(scale.geom) <- colnames(scale.log.normlist[[1]])
+
+  lgd <- sampleInfo %>%
+    mutate(RatioIntron=INTRONIC_BASES/CODING_BASES) %>%
+    select(SampleID, RatioIntron)
+
+  GBP <- convert_Chr2Numcol(convert_pivot.longer(scale.geom, c("region", "sample", "scale.geom")) %>%
+                              mutate(sample=gsub("\\.", "-", sample)) %>%
+                              select(region, sample, scale.geom) %>%
+                              inner_join(lgd, by=c("sample"="SampleID")), 1)
+
   if (plot) {
-    mt <- c("Method 1: Raw value", "Method 2: Interpolation")
-    st <- c("Median", "Mean")
-    ntcplot <- ggplot2::ggplot(normTC1, aes(x=region, colour=pair, group=sample)) +
-      geom_line(aes(y=normTC1[,4]), alpha=0.4) +
-      scale_colour_brewer(palette="Set1") +
-      theme(legend.position="bottom") +
-      labs(title=mt[method],x="Regions", y=paste0(st[stat]," normalized coverage")) +
-      guides(colour=guide_legend(title="")) +
-      theme(panel.background = element_rect(fill="gray97"))
-    print(ntcplot)
+    myPalette <- colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"))
+
+    p <- ggplot2::ggplot(GBP, aes(x=region, colour=RatioIntron, group=sample)) +
+      geom_line(aes(y=scale.geom), alpha=1, show.legend=TRUE) +
+      labs(title="", x="Gene body percentile (5'\u21923')", y=paste0(c("Median", "Mean")[stat]," scaled normalized coverage")) +
+      scale_colour_gradientn(colours=myPalette(100), limits=c(min(GBP$RatioIntron), max(GBP$RatioIntron)), name="Ratio intron") +
+      theme(legend.position="bottom",
+            panel.background=element_rect(fill="gray97"),
+            strip.text.x=element_text(size=12, color="black"),
+            strip.text.y=element_text(size=12, color="black"),
+            strip.background=element_rect(color="NA", fill="white", linewidth=1, linetype="solid"),
+            plot.title=element_text(hjust=0.5))
+    # print(p)
   }
 
-  return(normTC1)
+  return(list(GBP=GBP, plot=p))
 }
 
 
+#' Plot gene body coverage with good quality samples
+#'
+#' @param stat 1 and 2 return median and mean normalized coverage curves per sample, respectively. Default is 1.
+#' @param plot TRUE/FALSE turns on/off the normalized transcript coverage plot. Default is TRUE.
+#' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
+#' @param GBCresult results of the gene body coverage with all samples
+#' @param auc.vec a vector with SQI per sample
+#' @return a matrix and a plot, or a matrix for the gene body coverage where plot is TRUE or FALSE, respectively.
+#' @import tidyverse dplyr RColorBrewer ggplot2
+#' @export
+
+plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
+
+  lgd <- sampleInfo %>%
+    mutate(RatioIntron=INTRONIC_BASES/CODING_BASES) %>%
+    select(SampleID, RatioIntron)
+
+  GBP <- GBCresult$GBP %>%
+    filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Good", c("Sample")])$Sample)
+
+  if (plot) {
+    myPalette <- colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"))
+
+    p <- ggplot2::ggplot(GBP, aes(x=region, colour=RatioIntron, group=sample)) +
+      geom_line(aes(y=scale.geom), alpha=1, show.legend=TRUE) +
+      labs(title="", x="Gene body percentile (5'\u21923')", y=paste0(c("Median", "Mean")[stat]," scaled normalized coverage")) +
+      scale_colour_gradientn(colours=myPalette(100), limits=c(min(GBP$RatioIntron), max(GBP$RatioIntron)), name="Ratio intron") +
+      theme(legend.position="bottom",
+            panel.background=element_rect(fill="gray97"),
+            strip.text.x=element_text(size=12, color="black"),
+            strip.text.y=element_text(size=12, color="black"),
+            strip.background=element_rect(color="NA", fill="white", linewidth=1, linetype="solid"),
+            plot.title=element_text(hjust=0.5))
+    # print(p)
+  }
+
+  return(list(GBP=GBP, plot=p))
+}
 
 
 ## -------------------------------------------------
@@ -288,7 +391,7 @@ plot_normTC = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
 #' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
 #' @return MCD is a the number of genes x the number of samples matrix.
-#' @import SCISSOR parallel
+#' @import foreach doParallel SCISSOR parallel
 #' @export
 
 get_MCD = function(genelist, pileupPath, sampleInfo) {
@@ -325,7 +428,7 @@ get_MCD = function(genelist, pileupPath, sampleInfo) {
 #' @param winSize window size of the rolling window. Default is 20.
 #' @param egPct edge percent (one-side) to calculate the trimmed mean. Default is 10.
 #' @return wCV is a the number of genes x the number of samples matrix.
-#' @import SCISSOR zoo parallel
+#' @import foreach doParallel SCISSOR zoo parallel
 #' @export
 
 get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10) {
@@ -338,7 +441,7 @@ get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSiz
   registerDoParallel(cl)
   on.exit(stopCluster(cl), add=TRUE)
 
-  wCV <- foreach(g=1:length(pileupPath), .combine=rbind, .packages = c("SCISSOR", "zoo", "parallel"), .export = c("get_pileupExon", "norm_pileup.gene", "norm_pileup.spl")) %dopar%
+  wCV <- foreach(g=1:length(pileupPath), .combine=rbind, .packages=c("SCISSOR", "zoo", "parallel"), .export=c("get_pileupExon", "norm_pileup.gene", "norm_pileup.spl")) %dopar%
     {
       pileupData = get_pileupExon(g, pileupPath)
       if (nrow(pileupData) > 0) {
@@ -372,7 +475,7 @@ get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSiz
   stopCluster(cl)
 }
 
-                                                     
+
 #' Get a sample quality index (SQI) for samples
 #'
 #' @param MCD a mean coverage depth is a the number of genes x the number of samples matrix.
@@ -380,7 +483,7 @@ get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSiz
 #' @param rstPct restricted percent (one-side) to restrict genes by log transformed MC. Default is 20.
 #' @param obsPct span includes the percent of observations in each local regression. Default is 50.
 #' @return a vector with SQI per sample; a coordinate matrix of smoothed data; and a range of MCD.
-#' @import ggplot2 DescTools SCISSOR tidyverse
+#' @import ggplot2 DescTools SCISSOR tidyverse dplyr
 #' @export
 
 get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
@@ -429,7 +532,7 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
 #' @param SQIresult outputs from get_SQI function
 #' @return figures for the distribution of SQI by PD; and the relation of wCV and MCD.
 #' @references https://jtr13.github.io/cc21fall2/raincloud-plot-101-density-plot-or-boxplotwhy-not-do-both.html
-#' @import ggplot2 tidyverse scales tibble ggpubr
+#' @import ggplot2 tidyverse dplyr scales tibble ggpubr
 #' @export
 
 plot_SQI = function(SQIresult) {
