@@ -1,20 +1,6 @@
 Demo
 ================
 
-- [Data Description](#data-description)
-  - [Input structure](#input-structure)
-  - [Alliance](#alliance)
-- [Genome Alignment Profiles](#genome-alignment-profiles)
-- [Gene Body Coverage](#gene-body-coverage)
-  - [Gene body coverage with all
-    samples](#gene-body-coverage-with-all-samples)
-  - [CVs from gene body coverage](#cvs-from-gene-body-coverage)
-- [Sample Quality Index](#sample-quality-index)
-  - [Update gene body coverage with good quality
-    samples](#update-gene-body-coverage-with-good-quality-samples)
-- [Principal Component Analysis](#principal-component-analysis)
-- [window CV Heatmap](#window-cv-heatmap)
-
 ## Data Description
 
 ### Input structure
