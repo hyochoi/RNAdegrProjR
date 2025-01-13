@@ -50,6 +50,10 @@ round(apply(GAP$PCTmat, 2, mean), 1)
 
 print(GAP$plot)
 ```
+![](figures/Allianceex_GAP_v058.png)<!-- -->
+<div align="center">
+  <img width="40%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GAP_v058.png">
+</div>
 
 ## Gene Body Coverage
 
@@ -101,6 +105,10 @@ p5 <- GBC5$plot +
 
 ggpubr::ggarrange(p0, p5, common.legend=TRUE, legend="bottom", nrow=1)
 ```
+![](figures/Allianceex_GBC_v058.png)<!-- -->
+<div align="center">
+  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v058.png">
+</div>
 
 ### CVs from gene body coverage
 
@@ -164,6 +172,10 @@ table(auc.vec$SQI)
 
 plot_SQI(SQIresult=result)
 ```
+![](figures/Allianceex_SQI_v058.png)<!-- -->
+<div align="center">
+  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_SQI_v058.png">
+</div>
 
 ### Update gene body coverage with good quality samples
 
@@ -192,6 +204,15 @@ pg5 <- GBCg5$plotPD +
 
 ggpubr::ggarrange(pg0, pg5, common.legend=TRUE, legend="bottom", nrow=1)
 ```
+![](figures/Allianceex_GBCgRI_v058.png)<!-- -->
+<div align="center">
+  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBCgRI_v058.png">
+</div>
+
+![](figures/Allianceex_GBCgPD_v058.png)<!-- -->
+<div align="center">
+  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBCgPD_v058.png">
+</div>
 
 ## Principal Component Analysis
 
@@ -213,3 +234,7 @@ top_genes <- order(pc1_contributions, decreasing=TRUE)
 ```
 
 ## window CV Heatmap
+![](figures/Allianceex_wCVheatmap_v058-2.png)<!-- -->
+<div align="center">
+  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-2.png">
+</div>

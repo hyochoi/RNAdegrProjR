@@ -8,7 +8,7 @@ Despite easy storage and cost-effectiveness advantages, formalin-fixed paraffin-
 ## Documentation
 
 - [R functions](https://github.com/hyochoi/RNAdegrProjR/blob/master/doc/doc_Rfn.md)
-- [Demo](https://github.com/hyochoi/RNAdegrProjR/blob/master/doc/doc_Demo_v054.md)
+- [Demo](https://github.com/hyochoi/RNAdegrProjR/blob/master/doc/doc_Demo_v058.md)
 
 
 ## Data Processing
