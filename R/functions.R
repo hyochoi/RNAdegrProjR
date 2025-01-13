@@ -333,7 +333,7 @@ plot_GBC = function(pileupPath, geneNames, rnum=100, method=1, scale=TRUE, stat=
             strip.text.x=element_text(size=12, color="black"),
             strip.text.y=element_text(size=12, color="black"),
             strip.background=element_rect(color="NA", fill="white", linewidth=1, linetype="solid"),
-            plot.title=element_text(hjust=0.5))
+            plot.title=element_text(hjust=0.5, face="bold"))
     # print(p)
   }
 
@@ -354,30 +354,40 @@ plot_GBC = function(pileupPath, geneNames, rnum=100, method=1, scale=TRUE, stat=
 
 plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
 
-  lgd <- sampleInfo %>%
-    mutate(RatioIntron=INTRONIC_BASES/CODING_BASES) %>%
-    select(SampleID, RatioIntron)
-
+  # Update with good quality samples and PD
   GBP <- GBCresult$GBP %>%
-    filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Good", c("Sample")])$Sample)
+    filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Good", c("Sample")])$Sample) %>%
+    inner_join(auc.vec %>% select(Sample, PD), by=c("sample"="Sample"))
 
   if (plot) {
     myPalette <- colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"))
 
-    p <- ggplot2::ggplot(GBP, aes(x=region, colour=RatioIntron, group=sample)) +
+    pRI <- ggplot2::ggplot(GBP, aes(x=region, colour=RatioIntron, group=sample)) +
       geom_line(aes(y=scale.geom), alpha=1, show.legend=TRUE) +
       labs(title="", x="Gene body percentile (5'\u21923')", y=paste0(c("Median", "Mean")[stat]," scaled normalized coverage")) +
-      scale_colour_gradientn(colours=myPalette(100), limits=c(min(GBP$RatioIntron), max(GBP$RatioIntron)), name="Ratio intron") +
+      scale_colour_gradientn(colours=myPalette(100), limits=c(min(GBCresult$GBP$RatioIntron), max(GBCresult$GBP$RatioIntron)), name="Ratio intron") + # the original range of legend
       theme(legend.position="bottom",
             panel.background=element_rect(fill="gray97"),
             strip.text.x=element_text(size=12, color="black"),
             strip.text.y=element_text(size=12, color="black"),
             strip.background=element_rect(color="NA", fill="white", linewidth=1, linetype="solid"),
-            plot.title=element_text(hjust=0.5))
+            plot.title=element_text(hjust=0.5, face="bold"))
+
+    pPD <- ggplot2::ggplot(GBP, aes(x=region, colour=PD, group=sample)) +
+      geom_line(aes(y=scale.geom), alpha=1, show.legend=TRUE) +
+      labs(title="", x="Gene body percentile (5'\u21923')", y=paste0(c("Median", "Mean")[stat]," scaled normalized coverage")) +
+      scale_colour_gradientn(colours=myPalette(100), limits=c(min(GBP$PD), max(GBP$PD)), name="PD") +
+      theme(legend.position="bottom",
+            panel.background=element_rect(fill="gray97"),
+            strip.text.x=element_text(size=12, color="black"),
+            strip.text.y=element_text(size=12, color="black"),
+            strip.background=element_rect(color="NA", fill="white", linewidth=1, linetype="solid"),
+            plot.title=element_text(hjust=0.5, face="bold"))
+
     # print(p)
   }
 
-  return(list(GBP=GBP, plot=p))
+  return(list(GBP=GBP, plotRI=pRI, plotPD=pPD))
 }
 
 
