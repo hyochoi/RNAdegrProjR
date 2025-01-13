@@ -46,6 +46,10 @@ round(apply(GAP$PCTmat, 2, mean), 1)
 
 print(GAP$plot)
 ```
+![](figures/Allianceex_GAP_v054.png)<!-- -->
+<div align="center">
+  <img width="40%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GAP_v054.png">
+</div>
 
 ## Gene Body Coverage
 
@@ -97,6 +101,10 @@ p5 <- GBC5$plot +
 
 ggpubr::ggarrange(p, p0, p5, labels=c("A", "B", "C"), common.legend=TRUE, legend="bottom", nrow=1)
 ```
+![](figures/Allianceex_GBC_v054.png)<!-- -->
+<div align="center">
+  <img width="100%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v054.png">
+</div>
 
 ``` r
 ## Metrics from scaled normalized transcript coverage by margin
@@ -143,6 +151,10 @@ table(auc.vec$SQI)
 
 plot_SQI(SQIresult=result)
 ```
+![](figures/Allianceex_SQI_v054.png)<!-- -->
+<div align="center">
+  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_SQI_v054.png">
+</div>
 
 Update gene body coverage with good quality samples
 
@@ -159,3 +171,7 @@ p5g <- plot_GBCg(stat=2, plot=TRUE, sampleInfo, GBCresult=GBC5, auc.vec=result$a
 
 ggpubr::ggarrange(pg, p0g, p5g, labels=c("D", "E", "F"), common.legend=TRUE, legend="bottom", nrow=1)
 ```
+![](figures/Allianceex_GBCg_v054.png)<!-- -->
+<div align="center">
+  <img width="100%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBCg_v054.png">
+</div>
