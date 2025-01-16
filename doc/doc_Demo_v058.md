@@ -236,5 +236,5 @@ top_genes <- order(pc1_contributions, decreasing=TRUE)
 ## window CV Heatmap
 ![](figures/Allianceex_wCVheatmap_v058-2.png)<!-- -->
 <div align="center">
-  <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-2.png">
+  <img width="75%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-3.png">
 </div>
