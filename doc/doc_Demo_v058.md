@@ -18,7 +18,7 @@ To keep only exon location, we first build coverage `pileup` from raw
 pileup (part_intron) to `pileupData` (only_exon). Let’s take a look into
 the process of the first and the last genes. The equal number of
 positions will be selected from the different genomic positions:
-`LINC01772` and `MIR133A1HG` have 3,245 and 5,825 positions,
+_LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions,
 respectively.
 
 ``` r
