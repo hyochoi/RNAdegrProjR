@@ -76,7 +76,7 @@ dim(LI); dim(AC)
 
 Before coverage normalization, we identified and filtered low-expression genes in the `filter_lowExpGenes` function to reduce sampling noise.
 Only 788 out of 1,000 genes were used for gene body coverage by considering genes with smaller percentages of TPM < 5 than 50%.
-To compare coverage patterns in short and long genes, genes were divided into two groups: 0~5 kb and 5+ kb.
+To compare coverage patterns in short and long genes, genes were divided into two groups: 0~5 kb and 5+ kb cover 64 and 724 genes, respectively.
 
 ``` r
 ## Filtered genes
@@ -109,8 +109,8 @@ pileupPath2Len5 <- paste0(folder_path, "/", genelist2Len5, "/", genelist2Len5,"_
 length(pileupPath2Len5) # 724
 ```
 
-In the `plot_GBC` function, evenly spaced regions and pileups are defined as gene body percentile and normalized coverage.
-For gene length normalization methods, see the [R functions](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Rfn.md).
+In the `plot_GBC` function, evenly spaced regions are defined as gene body percentile where the number of regions is 100.
+For the normalized coverage at the region, see the [R functions](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Rfn.md).
 
 ``` r
 GBC0 = plot_GBC(pileupPath2Len0, geneNames=genelist2Len0, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo)
