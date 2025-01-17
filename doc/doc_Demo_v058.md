@@ -110,7 +110,7 @@ length(pileupPath2Len5) # 724
 ```
 
 In the `plot_GBC` function, evenly spaced regions are defined as gene body percentile where the number of regions is 100.
-For the normalized coverage at the region, see the [R functions](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Rfn.md).
+For details of the normalized coverage at the region, see [Gene Length Normalization](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Rfn.md#gene-length-normalization) in the R functions.
 
 ``` r
 GBC0 = plot_GBC(pileupPath2Len0, geneNames=genelist2Len0, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo)
