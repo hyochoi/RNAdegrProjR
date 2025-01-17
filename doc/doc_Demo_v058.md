@@ -27,10 +27,13 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
   - `RINs`: RIN value
   - `RatioIntron`: ratio of intronic bases and coding bases
 
-### Read BAM
-
 ### Alliance
 This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
+
+
+## Data Processing
+Read BAM
+
 
 ## Genome Alignment Profiles
 
