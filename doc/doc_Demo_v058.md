@@ -28,17 +28,20 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
   - `RatioIntron`: ratio of intronic bases and coding bases
 
 ### Alliance
-This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
-
+This example consists of 1,000 selected genes among protein-coding and lncRNA genes and fresh frozen and total RNA-seq (FFT) 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
+Among the 171 samples, 156 are tumor types and the others are normal.
 
 ## Data Processing
 Read BAM
 
 
 ## Genome Alignment Profiles
-
-The relative coverage of reads mapped in unaligned (unmapped bases),
-intergenic, intronic, and exonnic/protein coding and UTR regions
+The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein-coding and UTR regions in the FFT samples.
+Each percentage is defined in the `plot_GAP` function as follows:
+- `PCT_Unaligned`
+- `PCT_Intergenic`
+- `PCT_Intronic`
+- `PCT_Coding.UTR`
 
 ``` r
 GAP = plot_GAP(sampleInfo, plot=TRUE)
@@ -255,3 +258,6 @@ top_genes <- order(pc1_contributions, decreasing=TRUE)
 <div align="center">
   <img width="75%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-4.png">
 </div>
+
+
+[^1]: Zhao, W., He, X., Hoadley, K.A. et al. Comparison of RNA-Seq by poly (A) capture, ribosomal RNA depletion, and DNA microarray for expression profiling. BMC Genomics 15, 419 (2014). https://doi.org/10.1186/1471-2164-15-419
