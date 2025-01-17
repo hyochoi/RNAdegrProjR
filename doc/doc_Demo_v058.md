@@ -27,18 +27,8 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
 ### Read BAM
 
 ### Alliance
-
-This example consists of 1,000 selected genes and FFT 171 samples. The
-union transcript is used to extract only exon pileup. 
-
-
-
-To keep only exon location, we first build coverage `pileup` from raw
-pileup (part_intron) to `pileupData` (only_exon). Let’s take a look into
-the process of the first and the last genes. The equal number of
-positions will be selected from the different genomic positions:
-_LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions,
-respectively.
+This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples. The union transcript is used to extract only exon pileup. 
+To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). Let’s take a look into the process of the first and the last genes. The equal number of positions will be selected from the different genomic positions: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
 
 ``` r
 genelist[c(1, length(genelist))]
