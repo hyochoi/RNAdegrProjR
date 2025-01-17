@@ -14,7 +14,7 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
   - `geneSymbol`: gene names
   - `merged`: gene length
   - `exon.wtpct_gc`: weighted percentage of GC from exon level data
-  - `subcategory`: protein-coding or lncRNA
+  - `subcategory`: protein coding or lncRNA
 - `sampleInfo`: a data frame of sample information including sample ID and properties from [_Picard RnaSeqMetrics_](https://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics)
   - `SampleID`: sample ID
   - `PF_BASES`: the total number of bases within the PF_READS of the SAM or BAM file to be examined
@@ -28,7 +28,7 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
   - `RatioIntron`: ratio of intronic bases and coding bases
 
 ### Alliance
-This example consists of 1,000 selected genes among protein-coding and lncRNA genes and fresh frozen and total RNA-seq (FFT) 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
+This example consists of 1,000 selected genes among protein coding and lncRNA genes and fresh frozen and total RNA-seq (FFT) 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
 Among the samples, 156 are tumor types and the others are normal.
 
 ## Data Processing
@@ -36,7 +36,7 @@ Read BAM
 
 
 ## Genome Alignment Profiles
-The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein-coding and UTR regions in the FFT samples.
+The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein coding and UTR regions in the FFT samples.
 In the `plot_GAP` function, each percentage is defined as a proportion in the total regions of the genome using metrics about the alignment of RNA-seq reads.
 
 ``` r
@@ -76,6 +76,7 @@ dim(LI); dim(AC)
 
 Before coverage normalization, we identified and filtered low-expression genes in the `filter_lowExpGenes` function to reduce sampling noise.
 Only 788 out of 1,000 genes were used for gene body coverage by considering genes with smaller percentages of TPM < 5 than 50%.
+To compare coverage patterns in short and long genes, genes were divided into two groups: 0~5 kb and 5+ kb.
 
 ``` r
 ## Filtered genes
