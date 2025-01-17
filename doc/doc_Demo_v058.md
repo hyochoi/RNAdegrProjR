@@ -30,8 +30,7 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
 ### Read BAM
 
 ### Alliance
-This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data). The union transcript is used to extract only exon pileup.
-
+This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
 
 ## Genome Alignment Profiles
 
@@ -54,8 +53,7 @@ print(GAP$plot)
 ## Gene Body Coverage
 
 ### Gene body coverage with all samples
-
-To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
+The union transcript is used to extract only exon pileup. To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
 Let’s compare the dimension of `pileup` of the first and the last genes using `get_pileupExon` function: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
 
 ``` r
