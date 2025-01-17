@@ -130,9 +130,9 @@ ggpubr::ggarrange(p0, p5, common.legend=TRUE, legend="bottom", nrow=1)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v058.png">
 </div>
 
-### Coefficient of variation per level (margin)
+### Coefficient of variation per level
 Metrics from scaled normalized transcript coverage for samples can be calculated by the `get_metrics` function.
-We employed `robustCV` to compare trends with other sample properties and window CV matrix in a [heatmap](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Demo_v058.md#window-cv-heatmap).
+We employed sample level `robustCV` to compare trends with other sample properties and window CV matrix in a [heatmap](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Demo_v058.md#window-cv-heatmap).
 
 ``` r
 ptm=proc.time()[3]
