@@ -75,7 +75,7 @@ dim(LI); dim(AC)
     ## [1] 5825  171
 
 Before coverage normalization, we identified and filtered low-expression genes in the `filter_lowExpGenes` function to reduce sampling noise.
-Only 788 out of 1,000 genes were used for gene body coverage by considering genes with smaller percentages of TPM < 5 counts than 50%.
+Only 788 out of 1,000 genes were used for gene body coverage by considering genes with smaller percentages of TPM < 5 than 50%.
 
 ``` r
 ## Filtered genes
