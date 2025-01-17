@@ -27,8 +27,7 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
 ### Read BAM
 
 ### Alliance
-This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples. The union transcript is used to extract only exon pileup.
-You can find the files in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
+This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data). The union transcript is used to extract only exon pileup.
 
 
 ## Genome Alignment Profiles
