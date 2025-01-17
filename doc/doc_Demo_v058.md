@@ -109,7 +109,7 @@ pileupPath2Len5 <- paste0(folder_path, "/", genelist2Len5, "/", genelist2Len5,"_
 length(pileupPath2Len5) # 724
 ```
 
-An equal number of positions will be selected per gene, and the evenly spaced regions and pileup are defined as gene body percentile and normalized coverage in the plot of `plot_GBC`.
+In the `plot_GBC` function, evenly spaced regions and pileups are defined as gene body percentile and normalized coverage.
 For gene length normalization methods, see the [R functions](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Rfn.md).
 
 ``` r
@@ -131,8 +131,8 @@ ggpubr::ggarrange(p0, p5, common.legend=TRUE, legend="bottom", nrow=1)
 </div>
 
 ### CVs from gene body coverage
-
-Metrics from scaled normalized transcript coverage for samples
+Metrics from scaled normalized transcript coverage for samples can be calculated by the `get_metrics` function.
+We employed `robustCV` to compare trends with other sample properties and window CV matrix in a [heatmap](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Demo_v058.md#window-cv-heatmap).
 
 ``` r
 ptm=proc.time()[3]
