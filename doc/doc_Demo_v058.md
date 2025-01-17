@@ -24,6 +24,8 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
   - `PF_BASES`: the total number of bases within the PF_READS of the SAM or BAM file to be examined
   - `PF_ALIGNED_BASES`: the total number of aligned bases, in all mapped PF reads, that are aligned to the reference sequence
 
+### Read BAM
+
 ### Alliance
 
 This example consists of 1,000 selected genes and FFT 171 samples. The
