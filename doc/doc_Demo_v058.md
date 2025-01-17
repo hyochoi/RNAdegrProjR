@@ -27,24 +27,9 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
 ### Read BAM
 
 ### Alliance
-This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples. The union transcript is used to extract only exon pileup. 
-To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). Let’s take a look into the process of the first and the last genes. The equal number of positions will be selected from the different genomic positions: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
+This example consists of 1,000 selected genes among protein-coding and lncRNA genes and FFT 171 samples. The union transcript is used to extract only exon pileup.
+You can find the files in [data](https://github.com/hyochoi/RNAdegrProjR/data).
 
-``` r
-genelist[c(1, length(genelist))]
-```
-
-    ## [1] "LINC01772"  "MIR133A1HG"
-
-``` r
-LI = get_pileupExon(g=1, pileupPath)
-AC = get_pileupExon(g=length(genelist), pileupPath)
-dim(LI); dim(AC)
-```
-
-    ## [1] 3245  171
-
-    ## [1] 5825  171
 
 ## Genome Alignment Profiles
 
@@ -68,6 +53,26 @@ print(GAP$plot)
 
 ### Gene body coverage with all samples
 
+To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
+Let’s compare the dimension of `pileup` of the first and the last genes using `get_pileupExon` function: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
+
+``` r
+genelist[c(1, length(genelist))]
+```
+
+    ## [1] "LINC01772"  "MIR133A1HG"
+
+``` r
+LI = get_pileupExon(g=1, pileupPath)
+AC = get_pileupExon(g=length(genelist), pileupPath)
+dim(LI); dim(AC)
+```
+
+    ## [1] 3245  171
+
+    ## [1] 5825  171
+
+An equal number of positions will be selected per genes, and the evenly spaced regions and pileup are defined as gene body percentile and normalized coverage in the plot in `plot_GBC`.
 See R function in Documentation for details. Mean scaled normalized
 coverage at the gene body percentile by gene length.
 
