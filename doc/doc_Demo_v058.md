@@ -3,16 +3,33 @@ Demo
 
 ## Data Description
 
-### Input structure
+### Inputs
+We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obtain the sample quality index outputs and plots.
+`geneInfo` is optional if you want to compare results by the properties of genes. Input data and variable names are listed as follows:
+
+- `genelist`: a vector of gene names
+- `pileupPath`: a vector for file paths of coverage pileupData including .RData file names
+- `geneInfo`: a data frame of gene information including gene ID and properties based on _gencode v36_
+  - `gene_id`: Ensembl gene ID
+  - `geneSymbol`: gene names
+  - `merged`: gene length
+  - `exon.wtpct_gc`: weighted percentage of GC from exon level data
+  - `subcategory`: protein-coding or lncRNA
+- `sampleInfo`: a data frame of sample information including sample ID and properties from [_Picard RnaSeqMetrics_](https://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics)
+  - `SampleID`: sample ID
+  - `RINs`: RIN value
+  - `RatioIntron`: ratio of `INTRONIC_BASES`/`CODING_BASES`
+  - `INTRONIC_BASES`: number of bases in primary alignments that align to an intronic base for some gene, and not a coding or UTR base
+  - `CODING_BASES`: number of bases in primary alignments that align to a non-UTR coding base for some gene, and not ribosomal sequence
+  - `PF_BASES`: the total number of bases within the PF_READS of the SAM or BAM file to be examined
+  - `PF_ALIGNED_BASES`: the total number of aligned bases, in all mapped PF reads, that are aligned to the reference sequence
 
 ### Alliance
 
 This example consists of 1,000 selected genes and FFT 171 samples. The
-union transcript is used to extract only exon pileup. We need datasets
-such as `genelist`, coverage `pileup` (located in `pileupPath`), and
-`sampleInfo` to obtain the sample quality index outputs and plots.
-`geneInfo` is optional in case you want to compare results by properties
-of genes.
+union transcript is used to extract only exon pileup. 
+
+
 
 To keep only exon location, we first build coverage `pileup` from raw
 pileup (part_intron) to `pileupData` (only_exon). Let’s take a look into
