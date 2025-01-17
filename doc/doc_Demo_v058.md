@@ -37,7 +37,7 @@ Read BAM
 
 ## Genome Alignment Profiles
 The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein-coding and UTR regions in the FFT samples.
-Each percentage is defined in the `plot_GAP` function as follows:
+Each percentage is defined in the `plot_GAP` function using metrics about the alignment of RNA-seq reads:
 - `PCT_Unaligned`
 - `PCT_Intergenic`
 - `PCT_Intronic`
