@@ -29,7 +29,7 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
 
 ### Alliance
 This example consists of 1,000 selected genes among protein-coding and lncRNA genes and fresh frozen and total RNA-seq (FFT) 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
-Among the 171 samples, 156 are tumor types and the others are normal.
+Among the samples, 156 are tumor types and the others are normal.
 
 ## Data Processing
 Read BAM
@@ -37,11 +37,7 @@ Read BAM
 
 ## Genome Alignment Profiles
 The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein-coding and UTR regions in the FFT samples.
-Each percentage is defined in the `plot_GAP` function using metrics about the alignment of RNA-seq reads:
-- `PCT_Unaligned`
-- `PCT_Intergenic`
-- `PCT_Intronic`
-- `PCT_Coding.UTR`
+In the `plot_GAP` function, each percentage is defined as a proportion in the total regions of the genome using metrics about the alignment of RNA-seq reads.
 
 ``` r
 GAP = plot_GAP(sampleInfo, plot=TRUE)
@@ -60,7 +56,7 @@ print(GAP$plot)
 
 ### Gene body coverage with all samples
 The union transcript is used to extract only exon pileup. To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
-Let’s compare the dimension of `pileup` of the first and the last genes using `get_pileupExon` function: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
+Let’s compare the dimension of `pileup` for the first and the last genes using `get_pileupExon` function: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
 
 ``` r
 genelist[c(1, length(genelist))]
@@ -78,9 +74,8 @@ dim(LI); dim(AC)
 
     ## [1] 5825  171
 
-An equal number of positions will be selected per genes, and the evenly spaced regions and pileup are defined as gene body percentile and normalized coverage in the plot in `plot_GBC`.
-See R function in Documentation for details. Mean scaled normalized
-coverage at the gene body percentile by gene length.
+Before coverage normalization, we identified and filtered low-expression genes in the `filter_lowExpGenes` function to reduce sampling noise.
+Only 788 out of 1,000 genes were used for gene body coverage by considering genes with smaller percentages of TPM < 5 counts than 50%.
 
 ``` r
 ## Filtered genes
@@ -111,8 +106,12 @@ length(pileupPath2Len0) # 64
 genelist2Len5 <- geneInfo2[geneInfo2$LenSorted=="5+ kb", c("geneSymbol")]
 pileupPath2Len5 <- paste0(folder_path, "/", genelist2Len5, "/", genelist2Len5,"_pileup_part_intron.RData")
 length(pileupPath2Len5) # 724
+```
 
+An equal number of positions will be selected per gene, and the evenly spaced regions and pileup are defined as gene body percentile and normalized coverage in the plot of `plot_GBC`.
+For gene length normalization methods, see the [R functions](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Rfn.md).
 
+``` r
 GBC0 = plot_GBC(pileupPath2Len0, geneNames=genelist2Len0, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo)
 GBC5 = plot_GBC(pileupPath2Len5, geneNames=genelist2Len5, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo)
 
