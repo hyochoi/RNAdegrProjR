@@ -5,7 +5,7 @@ Demo
 
 ### Inputs
 We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obtain the sample quality index outputs and plots.
-`geneInfo` is optional if you want to compare results by the properties of genes. Description of Input data and variable names are listed as follows:
+`geneInfo` is optional if you want to compare results by the properties of genes. The description of Input data and variable names is listed as follows:
 
 - `genelist`: a vector of gene names
 - `pileupPath`: a vector for file paths of coverage pileupData including .RData file names
