@@ -17,12 +17,15 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
   - `subcategory`: protein-coding or lncRNA
 - `sampleInfo`: a data frame of sample information including sample ID and properties from [_Picard RnaSeqMetrics_](https://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics)
   - `SampleID`: sample ID
-  - `RINs`: RIN value
-  - `RatioIntron`: ratio of intronic bases and coding bases
-  - `INTRONIC_BASES`: number of bases in primary alignments that align to an intronic base for some gene, and not a coding or UTR base
-  - `CODING_BASES`: number of bases in primary alignments that align to a non-UTR coding base for some gene, and not ribosomal sequence
   - `PF_BASES`: the total number of bases within the PF_READS of the SAM or BAM file to be examined
   - `PF_ALIGNED_BASES`: the total number of aligned bases, in all mapped PF reads, that are aligned to the reference sequence
+  - `RIBOSOMAL_BASES`: number of bases in primary alignments that align to ribosomal sequence
+  - `CODING_BASES`: number of bases in primary alignments that align to a non-UTR coding base for some gene, and not ribosomal sequence
+  - `UTR_BASES`: number of bases in primary alignments that align to a UTR base for some gene, and not a coding base
+  - `INTRONIC_BASES`: number of bases in primary alignments that align to an intronic base for some gene, and not a coding or UTR base
+  - `INTERGENIC_BASES`: number of bases in primary alignments that do not align to any gene
+  - `RINs`: RIN value
+  - `RatioIntron`: ratio of intronic bases and coding bases
 
 ### Read BAM
 
