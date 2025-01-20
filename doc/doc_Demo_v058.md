@@ -32,7 +32,12 @@ This example consists of 1,000 selected genes among protein coding and lncRNA ge
 Among the samples, 156 are tumor types and the others are normal.
 
 ## Data Processing
-Read BAM
+`SCISSOR` package was applied to generate a gene annotation file, pileup data from BAM files, and coverage plots based on its [tutorial](https://hyochoi.github.io/SCISSOR/tutorial/).
+`build_gaf` function creates a gene annotation file named `SCISSOR_gaf.txt` and shows the full path of the file. The file has 3 columns: `gene_name`, `gene_id`, and `regions`.
+``` r
+regions = build_gaf(GTF.file="./data/gencode.v36.annotation.gtf")
+head(regions)
+```
 
 
 ## Genome Alignment Profiles
