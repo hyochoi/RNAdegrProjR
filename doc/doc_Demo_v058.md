@@ -35,10 +35,12 @@ Among the samples, 156 are tumor types and the others are normal.
 `SCISSOR` package was applied to generate a gene annotation file, pileup data from BAM files, and coverage plots based on its [tutorial](https://hyochoi.github.io/SCISSOR/tutorial/).
 `build_gaf` function creates a gene annotation file named `SCISSOR_gaf.txt` and shows the full path of the file. The file has 3 columns: `gene_name`, `gene_id`, and `regions`.
 ``` r
-regions = build_gaf(GTF.file="./data/gencode.v36.annotation.gtf")
+regions = SCISSOR::build_gaf(GTF.file="./data/gencode.v36.annotation.gtf")
 head(regions)
 ```
+> ./data/SCISSOR_gaf.txt has been created
 
+Then, we can make pileup for specific genes and samples using BAM files and `regions` for the whole genes.
 
 ## Genome Alignment Profiles
 The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein coding and UTR regions in the FFT samples.
