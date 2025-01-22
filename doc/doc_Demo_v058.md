@@ -49,7 +49,7 @@ If 5 bam files are saved in the `bamfiles` folder after [_Samtools_](https://www
 # [5] "./bamfiles/STAR_S000004-37941-002_Aligned.out.sort.bam"
 ```
 
-`convert_BAM2pileup` function saves `pileup`, `new.regions`, and `Ranges` for each gene of `genelist`. Processing batches are 1-16, 17-32, ..., 993-1000 of 1000 where the batch size is 16 and the number of selected genes is 1000.
+The `convert_BAM2pileup` function saves `pileup`, `new.regions`, and `Ranges` for each gene of `genelist`. Processing batches are 1-16, 17-32, ..., 993-1000 of 1000 where the batch size is 16 and the number of selected genes is 1000.
 ``` r
 convert_BAM2pileup(genelist=genelist,
                    regions=data.table::fread(file="./data/SCISSOR_gaf.txt"),
@@ -58,6 +58,17 @@ convert_BAM2pileup(genelist=genelist,
                    caseIDs=substr(basename(BAMfiles), start=6, stop=22),
                    outputdir=paste0(root, "Output/readBAM/"),
                    batchSize=16)
+```
+
+While the function submits a single job and repeats each loop having the batch size, the `convert_BAM2pileup.gene` function can be used to submit multiple jobs using the array 1-1000.
+``` r
+convert_BAM2pileup.gene(g=as.numeric(Sys.getenv("SLURM_ARRAY_TASK_ID")),
+                   genelist=genelist,
+                   regions=data.table::fread(file="./data/SCISSOR_gaf.txt"),
+                   outputType="part_intron",
+                   BAMfiles=BAMfiles,
+                   caseIDs=substr(basename(BAMfiles), start=6, stop=22),
+                   outputdir=paste0(root, "Output/readBAM/"))
 ```
 
 ## Genome Alignment Profiles
