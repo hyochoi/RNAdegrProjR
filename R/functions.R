@@ -1,3 +1,53 @@
+convert_BAM2pileup <- function(genelist, regions, outputType="part_intron", BAMfiles, caseIDs, outputdir, batchSize=16) {
+
+  # Split genelist into batches
+  batches <- split(seq_along(genelist), ceiling(seq_along(genelist)/batchSize))
+
+  # Process each batch
+  for (batch in batches) {
+    cat("Processing batch:", paste(range(batch), collapse="-"), "of", length(genelist), "\n")
+
+    # cl <- makeCluster(parallel::detectCores()-1)
+    cl <- makeCluster(parallel::detectCores()-1, type="SOCK")
+    registerDoParallel(cl)
+    on.exit(stopCluster(cl), add=TRUE)
+
+    foreach(g=batch, .packages=c("SCISSOR", "data.table", "GenomicAlignments", "Rsamtools"), .combine='c', .multicombine=TRUE, .maxcombine=100) %dopar%
+      {
+        # Update regions for genelist
+        regions <- as.data.frame(regions)[match(genelist, regions$gene_name), ]
+
+        # Get each pileup
+        Gene <- as.character(regions[g, c("gene_name")])
+        Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regions[g, c("regions")]), outputType=outputType)
+        new.regions = Ranges$new.regions
+        pileup = SCISSOR::read_BAM(BAMfiles=BAMfiles, caseIDs=caseIDs, regions=new.regions)
+
+        save(pileup, new.regions, Ranges,
+             file=paste0(outputdir, Gene, "_pileup_", outputType, ".RData"))
+      }
+    stopCluster(cl)
+  }
+
+  cat("Processing completed for all batches.\n")
+}
+
+
+convert_BAM2pileup.gene <- function(g, genelist, regions, outputType="part_intron", BAMfiles, caseIDs, outputdir) {
+
+  # Update regions for genelist
+  regions <- as.data.frame(regions)[match(genelist, regions$gene_name), ]
+
+  # Get each pileup
+  Gene <- as.character(regions[g, c("gene_name")])
+  Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regions[g, c("regions")]), outputType=outputType)
+  new.regions = Ranges$new.regions
+  pileup = SCISSOR::read_BAM(BAMfiles=BAMfiles, caseIDs=caseIDs, regions=new.regions)
+
+  save(pileup, new.regions, Ranges, file=paste0(outputdir, Gene, "_pileup_", outputType, ".RData"))
+}
+
+
 #' Get a focused pileup of exon location for the g-th gene
 #'
 #' @param g the gene order in genelist
