@@ -3,44 +3,77 @@ Demo
 
 ## Data Description
 
-### Input structure
+### Inputs
+We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obtain the sample quality index outputs and plots.
+`geneInfo` is optional if you want to compare results by the properties of genes. The description of Input data and variable names is listed as follows:
+
+- `genelist`: a vector of gene names
+- `pileupPath`: a vector for file paths of coverage pileupData including .RData file names
+- `geneInfo`: a data frame of gene information including gene ID and properties based on _gencode v36_
+  - `gene_id`: Ensembl gene ID
+  - `geneSymbol`: gene names
+  - `merged`: gene length
+  - `exon.wtpct_gc`: weighted percentage of GC from exon level data
+  - `subcategory`: protein coding or lncRNA
+- `sampleInfo`: a data frame of sample information including sample ID and properties from [_Picard RnaSeqMetrics_](https://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics)
+  - `SampleID`: sample ID
+  - `PF_BASES`: the total number of bases within the PF_READS of the SAM or BAM file to be examined
+  - `PF_ALIGNED_BASES`: the total number of aligned bases, in all mapped PF reads, that are aligned to the reference sequence
+  - `RIBOSOMAL_BASES`: number of bases in primary alignments that align to ribosomal sequence
+  - `CODING_BASES`: number of bases in primary alignments that align to a non-UTR coding base for some gene, and not ribosomal sequence
+  - `UTR_BASES`: number of bases in primary alignments that align to a UTR base for some gene, and not a coding base
+  - `INTRONIC_BASES`: number of bases in primary alignments that align to an intronic base for some gene, and not a coding or UTR base
+  - `INTERGENIC_BASES`: number of bases in primary alignments that do not align to any gene
+  - `RINs`: RIN value
+  - `RatioIntron`: ratio of intronic bases and coding bases
 
 ### Alliance
+This example consists of 1,000 selected genes among protein coding and lncRNA genes and fresh frozen and total RNA-seq (FFT) 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
+Among the samples, 156 are tumor types and the others are normal.
 
-This example consists of 1,000 selected genes and FFT 171 samples. The
-union transcript is used to extract only exon pileup. We need datasets
-such as `genelist`, coverage `pileup` (located in `pileupPath`), and
-`sampleInfo` to obtain the sample quality index outputs and plots.
-`geneInfo` is optional in case you want to compare results by properties
-of genes.
-
-To keep only exon location, we first build coverage `pileup` from raw
-pileup (part_intron) to `pileupData` (only_exon). Let’s take a look into
-the process of the first and the last genes. The equal number of
-positions will be selected from the different genomic positions:
-`LINC01772` and `MIR133A1HG` have 3,245 and 5,825 positions,
-respectively.
-
+## Data Processing
+`SCISSOR` package was applied to generate a gene annotation file, pileup data from BAM files, and coverage plots based on its [tutorial](https://hyochoi.github.io/SCISSOR/tutorial/).
+`build_gaf` function creates a gene annotation file named `SCISSOR_gaf.txt` and shows the full path of the file. The file has 3 columns: `gene_name`, `gene_id`, and `regions`.
 ``` r
-genelist[c(1, length(genelist))]
+regions = SCISSOR::build_gaf(GTF.file="./data/gencode.v36.annotation.gtf")
 ```
 
-    ## [1] "LINC01772"  "MIR133A1HG"
-
+Then, we can make a pileup for specific genes and samples using BAM files and `regions` for the whole genes.
+If 5 bam files are saved in the `bamfiles` folder after [_Samtools_](https://www.htslib.org/workflow/fastq.html), the full file path of them can be set as `BAMfiles`.
 ``` r
-LI = get_pileupExon(g=1, pileupPath)
-AC = get_pileupExon(g=length(genelist), pileupPath)
-dim(LI); dim(AC)
+(BAMfiles <- list.files(path=paste0(root, "bamfiles"), pattern="\\.sort.bam$", full.names=TRUE))
+# [1] "./bamfiles/STAR_S000004-37933-003_Aligned.out.sort.bam"
+# [2] "./bamfiles/STAR_S000004-37935-002_Aligned.out.sort.bam"
+# [3] "./bamfiles/STAR_S000004-37937-002_Aligned.out.sort.bam"
+# [4] "./bamfiles/STAR_S000004-37939-002_Aligned.out.sort.bam"
+# [5] "./bamfiles/STAR_S000004-37941-002_Aligned.out.sort.bam"
 ```
 
-    ## [1] 3245  171
+The `convert_BAM2pileup` function saves `pileup`, `new.regions`, and `Ranges` for each gene of `genelist`. Processing batches are 1-16, 17-32, ..., 993-1000 of 1000 where the batch size is 16 and the number of selected genes is 1000.
+``` r
+convert_BAM2pileup(genelist=genelist,
+                   regions=data.table::fread(file="./data/SCISSOR_gaf.txt"),
+                   outputType="part_intron",
+                   BAMfiles=BAMfiles,
+                   caseIDs=substr(basename(BAMfiles), start=6, stop=22),
+                   outputdir=paste0(root, "Output/readBAM/"),
+                   batchSize=16)
+```
 
-    ## [1] 5825  171
+While the function submits a single job and repeats each loop having the batch size, the `convert_BAM2pileup.gene` function can be used to submit multiple jobs using the array 1-1000.
+``` r
+convert_BAM2pileup.gene(g=as.numeric(Sys.getenv("SLURM_ARRAY_TASK_ID")),
+                   genelist=genelist,
+                   regions=data.table::fread(file="./data/SCISSOR_gaf.txt"),
+                   outputType="part_intron",
+                   BAMfiles=BAMfiles,
+                   caseIDs=substr(basename(BAMfiles), start=6, stop=22),
+                   outputdir=paste0(root, "Output/readBAM/"))
+```
 
 ## Genome Alignment Profiles
-
-The relative coverage of reads mapped in unaligned (unmapped bases),
-intergenic, intronic, and exonnic/protein coding and UTR regions
+The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein coding and UTR regions in the FFT samples.
+In the `plot_GAP` function, each percentage is defined as a proportion in the total regions of the genome using metrics about the alignment of RNA-seq reads.
 
 ``` r
 GAP = plot_GAP(sampleInfo, plot=TRUE)
@@ -58,9 +91,28 @@ print(GAP$plot)
 ## Gene Body Coverage
 
 ### Gene body coverage with all samples
+The union transcript is used to extract only exon pileup. To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
+Let’s compare the dimension of `pileup` for the first and the last genes using `get_pileupExon` function: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
 
-See R function in Documentation for details. Mean scaled normalized
-coverage at the gene body percentile by gene length.
+``` r
+genelist[c(1, length(genelist))]
+```
+
+    ## [1] "LINC01772"  "MIR133A1HG"
+
+``` r
+LI = get_pileupExon(g=1, pileupPath)
+AC = get_pileupExon(g=length(genelist), pileupPath)
+dim(LI); dim(AC)
+```
+
+    ## [1] 3245  171
+
+    ## [1] 5825  171
+
+Before coverage normalization, we identified and filtered low-expression genes in the `filter_lowExpGenes` function to reduce sampling noise.
+Only 788 out of 1,000 genes were used for gene body coverage by considering genes with smaller percentages of TPM < 5 than 50%.
+To compare coverage patterns in short and long genes, genes were divided into two groups: 0~5 kb and 5+ kb cover 64 and 724 genes, respectively.
 
 ``` r
 ## Filtered genes
@@ -91,8 +143,12 @@ length(pileupPath2Len0) # 64
 genelist2Len5 <- geneInfo2[geneInfo2$LenSorted=="5+ kb", c("geneSymbol")]
 pileupPath2Len5 <- paste0(folder_path, "/", genelist2Len5, "/", genelist2Len5,"_pileup_part_intron.RData")
 length(pileupPath2Len5) # 724
+```
 
+In the `plot_GBC` function, evenly spaced regions are defined as gene body percentile where the number of regions is 100.
+For details of the normalized coverage at the region, see [Gene Length Normalization](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Rfn.md#gene-length-normalization) in the R functions.
 
+``` r
 GBC0 = plot_GBC(pileupPath2Len0, geneNames=genelist2Len0, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo)
 GBC5 = plot_GBC(pileupPath2Len5, geneNames=genelist2Len5, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo)
 
@@ -110,9 +166,9 @@ ggpubr::ggarrange(p0, p5, common.legend=TRUE, legend="bottom", nrow=1)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v058.png">
 </div>
 
-### CVs from gene body coverage
-
-Metrics from scaled normalized transcript coverage for samples
+### Coefficient of variation per level
+Metrics from scaled normalized transcript coverage for samples can be calculated by the `get_metrics` function.
+We employed sample level `robustCV` to compare trends with other sample properties and window CV matrix in a [heatmap](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Demo_v058.md#window-cv-heatmap).
 
 ``` r
 ptm=proc.time()[3]
@@ -234,7 +290,10 @@ top_genes <- order(pc1_contributions, decreasing=TRUE)
 ```
 
 ## window CV Heatmap
-![](figures/Allianceex_wCVheatmap_v058-2.png)<!-- -->
+![](figures/Allianceex_wCVheatmap_v058-4.png)<!-- -->
 <div align="center">
-  <img width="75%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-3.png">
+  <img width="75%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-4.png">
 </div>
+
+
+[^1]: Zhao, W., He, X., Hoadley, K.A. et al. Comparison of RNA-Seq by poly (A) capture, ribosomal RNA depletion, and DNA microarray for expression profiling. BMC Genomics 15, 419 (2014). https://doi.org/10.1186/1471-2164-15-419
