@@ -36,11 +36,29 @@ Among the samples, 156 are tumor types and the others are normal.
 `build_gaf` function creates a gene annotation file named `SCISSOR_gaf.txt` and shows the full path of the file. The file has 3 columns: `gene_name`, `gene_id`, and `regions`.
 ``` r
 regions = SCISSOR::build_gaf(GTF.file="./data/gencode.v36.annotation.gtf")
-head(regions)
 ```
-> ./data/SCISSOR_gaf.txt has been created
 
-Then, we can make pileup for specific genes and samples using BAM files and `regions` for the whole genes.
+Then, we can make a pileup for specific genes and samples using BAM files and `regions` for the whole genes.
+If 5 bam files are saved in the `bamfiles` folder after [_Samtools_](https://www.htslib.org/workflow/fastq.html), the full file path of them can be set as `BAMfiles`.
+``` r
+(BAMfiles <- list.files(path=paste0(root, "bamfiles"), pattern="\\.sort.bam$", full.names=TRUE))
+# [1] "./bamfiles/STAR_S000004-37933-003_Aligned.out.sort.bam"
+# [2] "./bamfiles/STAR_S000004-37935-002_Aligned.out.sort.bam"
+# [3] "./bamfiles/STAR_S000004-37937-002_Aligned.out.sort.bam"
+# [4] "./bamfiles/STAR_S000004-37939-002_Aligned.out.sort.bam"
+# [5] "./bamfiles/STAR_S000004-37941-002_Aligned.out.sort.bam"
+```
+
+`convert_BAM2pileup` function save `pileup`, `new.regions`, and `Ranges` for each gene of `genelist`. Processing batches are 1-16, 17-32, ..., 993-1000 of 1000 where batch size is 16 and the number of selected genes is 1000.
+``` r
+convert_BAM2pileup(genelist=genelist,
+                   regions=data.table::fread(file="./data/SCISSOR_gaf.txt"),
+                   outputType="part_intron",
+                   BAMfiles=BAMfiles,
+                   caseIDs=substr(basename(BAMfiles), start=6, stop=22),
+                   outputdir=paste0(root, "Output/readBAM/"),
+                   batchSize=16)
+```
 
 ## Genome Alignment Profiles
 The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein coding and UTR regions in the FFT samples.
