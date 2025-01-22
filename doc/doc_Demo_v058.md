@@ -49,7 +49,7 @@ If 5 bam files are saved in the `bamfiles` folder after [_Samtools_](https://www
 # [5] "./bamfiles/STAR_S000004-37941-002_Aligned.out.sort.bam"
 ```
 
-`convert_BAM2pileup` function save `pileup`, `new.regions`, and `Ranges` for each gene of `genelist`. Processing batches are 1-16, 17-32, ..., 993-1000 of 1000 where batch size is 16 and the number of selected genes is 1000.
+`convert_BAM2pileup` function saves `pileup`, `new.regions`, and `Ranges` for each gene of `genelist`. Processing batches are 1-16, 17-32, ..., 993-1000 of 1000 where the batch size is 16 and the number of selected genes is 1000.
 ``` r
 convert_BAM2pileup(genelist=genelist,
                    regions=data.table::fread(file="./data/SCISSOR_gaf.txt"),
