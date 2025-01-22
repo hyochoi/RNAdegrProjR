@@ -196,7 +196,8 @@ head(met)
 
 ## Sample Quality Index
 
-Calculate a mean coverage depth and a window coefficient of variation
+A mean coverage depth (MCD) and a window coefficient of variation (wCV) can be calculated from the `get_MCD` and `get_wCV` functions.
+Both functions return the same dimension of a matrix, which is (the number of genes) x (the number of samples).
 
 ``` r
 ptm=proc.time()[3]
@@ -212,7 +213,9 @@ proc.time()[3]-ptm
 #  78.392 
 ```
 
-Sample quality index
+The `get_SQI` function gives the AUC of the fitted lines in the regression of wCV and log transformed MCD, and normalizes it using projection depth (PD). 
+Finally, we can determine the quality of the samples by defining them as _Bad_ if they have PD> 3. Nineteen out of 171 samples are classified as bad quality samples.
+The SQI plot shows the distribution of AUC and PD and the shape of the regression by sample quality.
 
 ``` r
 ptm=proc.time()[3]
