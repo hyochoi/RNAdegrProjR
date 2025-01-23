@@ -112,7 +112,7 @@ dim(LI); dim(AC)
 
 Before coverage normalization, we identified and filtered low-expression genes in the `filter_lowExpGenes` function to reduce sampling noise.
 Only 788 out of 1,000 genes were used for gene body coverage by considering genes with smaller percentages of TPM < 5 than 50%.
-To compare coverage patterns in short and long genes, genes were divided into two groups: 0~5 kb and 5+ kb cover 64 and 724 genes, respectively.
+Genes were divided into two groups to compare coverage patterns in short and long genes. 0~5 kb and 5+ kb cover 64 and 724 genes, respectively.
 
 ``` r
 ## Filtered genes
@@ -196,7 +196,8 @@ head(met)
 
 ## Sample Quality Index
 
-Calculate a mean coverage depth and a window coefficient of variation
+A mean coverage depth (MCD) and a window coefficient of variation (wCV) can be calculated from the `get_MCD` and `get_wCV` functions.
+Both functions return the same dimension of a matrix, which is (the number of genes) x (the number of samples).
 
 ``` r
 ptm=proc.time()[3]
@@ -212,7 +213,9 @@ proc.time()[3]-ptm
 #  78.392 
 ```
 
-Sample quality index
+The `get_SQI` function gives the AUC of the fitted lines in the regression of wCV and log transformed MCD, and normalizes it using projection depth (PD)[^2]. 
+Finally, we can determine the quality of the samples by defining them as _Bad_ if they have PD> 3. Nineteen out of 171 samples are classified as bad quality samples.
+The SQI plot shows the distribution of AUC and PD and the shape of the regression by sample quality.
 
 ``` r
 ptm=proc.time()[3]
@@ -234,6 +237,9 @@ plot_SQI(SQIresult=result)
 </div>
 
 ### Update gene body coverage with good quality samples
+
+The gene body coverage plot updated after removing bad samples using the `plot_GBCg` function. The coverage patterns become much stable especially in the long genes. 
+A continuous lengend can be selected among ratio intron and PD for the plot.
 
 ``` r
 GBCg0 = plot_GBCg(stat=2, plot=TRUE, sampleInfo, GBCresult=GBC0, auc.vec=result$auc.vec)
@@ -270,7 +276,10 @@ ggpubr::ggarrange(pg0, pg5, common.legend=TRUE, legend="bottom", nrow=1)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBCgPD_v058.png">
 </div>
 
-## Principal Component Analysis
+
+## window CV Heatmap
+
+### Principal component analysis
 
 ``` r
 # Convert NA to 0
@@ -289,7 +298,6 @@ pc1_contributions <- abs(pca_result$rotation[, 1])
 top_genes <- order(pc1_contributions, decreasing=TRUE)
 ```
 
-## window CV Heatmap
 ![](figures/Allianceex_wCVheatmap_v058-4.png)<!-- -->
 <div align="center">
   <img width="75%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-4.png">
@@ -297,3 +305,4 @@ top_genes <- order(pc1_contributions, decreasing=TRUE)
 
 
 [^1]: Zhao, W., He, X., Hoadley, K.A. et al. Comparison of RNA-Seq by poly (A) capture, ribosomal RNA depletion, and DNA microarray for expression profiling. BMC Genomics 15, 419 (2014). https://doi.org/10.1186/1471-2164-15-419
+[^2]: Choi, H. (2018). Scissor for finding outliers in RNA-seq. https://doi.org/10.17615/dv2e-7a29
