@@ -95,7 +95,7 @@ print(GAP$plot)
 </div>
 
 
-## Data processing
+## Data Processing
 
 ### Gene body coverage with all samples
 The union transcript is used to extract only exon pileup. To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
