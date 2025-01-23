@@ -31,7 +31,12 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
 This example consists of 1,000 selected genes among protein coding and lncRNA genes and fresh frozen and total RNA-seq (FFT) 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
 Among the samples, 156 are tumor types and the others are normal.
 
-## Data Processing
+
+## Data Generation
+
+### Slice BAM
+
+### Read BAM
 `SCISSOR` package was applied to generate a gene annotation file, pileup data from BAM files, and coverage plots based on its [tutorial](https://hyochoi.github.io/SCISSOR/tutorial/).
 `build_gaf` function creates a gene annotation file named `SCISSOR_gaf.txt` and shows the full path of the file. The file has 3 columns: `gene_name`, `gene_id`, and `regions`.
 ``` r
@@ -71,6 +76,7 @@ convert_BAM2pileup.gene(g=as.numeric(Sys.getenv("SLURM_ARRAY_TASK_ID")),
                    outputdir=paste0(root, "Output/readBAM/"))
 ```
 
+
 ## Genome Alignment Profiles
 The transcriptome coverage directly affects the accuracy of vital features of all gene expression studies[^1]. Thus, we compared the coverage distribution of reads mapped in unaligned (unmapped bases), intergenic, intronic, and exonnic/protein coding and UTR regions in the FFT samples.
 In the `plot_GAP` function, each percentage is defined as a proportion in the total regions of the genome using metrics about the alignment of RNA-seq reads.
@@ -88,7 +94,8 @@ print(GAP$plot)
   <img width="40%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GAP_v058.png">
 </div>
 
-## Gene Body Coverage
+
+## Data processing
 
 ### Gene body coverage with all samples
 The union transcript is used to extract only exon pileup. To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
@@ -194,7 +201,8 @@ head(met)
 # S000004-38138-003 0.3579549
 ```
 
-## Sample Quality Index
+
+## Sample Quality
 
 A mean coverage depth (MCD) and a window coefficient of variation (wCV) can be calculated from the `get_MCD` and `get_wCV` functions.
 Both functions return the same dimension of a matrix, which is (the number of genes) x (the number of samples).
