@@ -203,6 +203,7 @@ head(met)
 
 ## Sample Quality
 
+### Sample quality index
 A mean coverage depth (MCD) and a window coefficient of variation (wCV) can be calculated from the `get_MCD` and `get_wCV` functions.
 Both functions return the same dimension of a matrix, which is (the number of genes) x (the number of samples).
 
