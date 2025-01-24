@@ -284,7 +284,7 @@ ggpubr::ggarrange(pg0, pg5, common.legend=TRUE, legend="bottom", nrow=1)
 </div>
 
 
-## window CV Heatmap
+## Applications
 
 ### Principal component analysis
 
@@ -305,6 +305,7 @@ pc1_contributions <- abs(pca_result$rotation[, 1])
 top_genes <- order(pc1_contributions, decreasing=TRUE)
 ```
 
+### window CV heatmap
 ![](figures/Allianceex_wCVheatmap_v058-4.png)<!-- -->
 <div align="center">
   <img width="75%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-4.png">
