@@ -96,7 +96,7 @@ print(GAP$plot)
 
 ## Data Processing
 
-### Gene body coverage with all samples
+### Gene body coverage
 The union transcript is used to extract only exon pileup. To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
 Let’s compare the dimension of `pileup` for the first and the last genes using `get_pileupExon` function: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
 
@@ -172,7 +172,7 @@ ggpubr::ggarrange(p0, p5, common.legend=TRUE, legend="bottom", nrow=1)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v058.png">
 </div>
 
-### Coefficient of variation per level
+### CVs per level
 Metrics from scaled normalized transcript coverage for samples can be calculated by the `get_metrics` function.
 We employed sample level `robustCV` to compare trends with other sample properties and window CV matrix in a [heatmap](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Demo_v058.md#window-cv-heatmap).
 
@@ -243,10 +243,10 @@ plot_SQI(SQIresult=result)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_SQI_v058.png">
 </div>
 
-### Update gene body coverage with good quality samples
+### Updated gene body coverage
 
-The gene body coverage plot updated after removing bad samples using the `plot_GBCg` function. The coverage patterns become much stable especially in the long genes. 
-A continuous lengend can be selected among ratio intron and PD for the plot.
+The gene body coverage plot can be updated after removing bad samples using the `plot_GBCg` function. The coverage patterns become much more stable, especially in the long genes. 
+A continuous legend can be selected among ratio intron and PD for the plot.
 
 ``` r
 GBCg0 = plot_GBCg(stat=2, plot=TRUE, sampleInfo, GBCresult=GBC0, auc.vec=result$auc.vec)
@@ -284,7 +284,7 @@ ggpubr::ggarrange(pg0, pg5, common.legend=TRUE, legend="bottom", nrow=1)
 </div>
 
 
-## window CV Heatmap
+## Applications
 
 ### Principal component analysis
 
@@ -305,6 +305,7 @@ pc1_contributions <- abs(pca_result$rotation[, 1])
 top_genes <- order(pc1_contributions, decreasing=TRUE)
 ```
 
+### window CV heatmap
 ![](figures/Allianceex_wCVheatmap_v058-4.png)<!-- -->
 <div align="center">
   <img width="75%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_wCVheatmap_v058-4.png">
