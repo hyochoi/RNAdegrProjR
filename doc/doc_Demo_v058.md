@@ -243,10 +243,10 @@ plot_SQI(SQIresult=result)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_SQI_v058.png">
 </div>
 
-### Update gene body coverage
+### Updated gene body coverage
 
-The gene body coverage plot updated after removing bad samples using the `plot_GBCg` function. The coverage patterns become much stable especially in the long genes. 
-A continuous lengend can be selected among ratio intron and PD for the plot.
+The gene body coverage plot can be updated after removing bad samples using the `plot_GBCg` function. The coverage patterns become much more stable, especially in the long genes. 
+A continuous legend can be selected among ratio intron and PD for the plot.
 
 ``` r
 GBCg0 = plot_GBCg(stat=2, plot=TRUE, sampleInfo, GBCresult=GBC0, auc.vec=result$auc.vec)
