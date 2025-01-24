@@ -96,7 +96,7 @@ print(GAP$plot)
 
 ## Data Processing
 
-### Gene body coverage with all samples
+### Gene body coverage
 The union transcript is used to extract only exon pileup. To keep only exon location, we first build coverage `pileup` from raw pileup (part_intron) to `pileupData` (only_exon). 
 Let’s compare the dimension of `pileup` for the first and the last genes using `get_pileupExon` function: _LINC01772_ and _MIR133A1HG_ have 3,245 and 5,825 positions, respectively.
 
@@ -172,7 +172,7 @@ ggpubr::ggarrange(p0, p5, common.legend=TRUE, legend="bottom", nrow=1)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_GBC_v058.png">
 </div>
 
-### Coefficient of variation per level
+### CVs per level
 Metrics from scaled normalized transcript coverage for samples can be calculated by the `get_metrics` function.
 We employed sample level `robustCV` to compare trends with other sample properties and window CV matrix in a [heatmap](https://github.com/hyochoi/RNAdegrProjR/blob/main/doc/doc_Demo_v058.md#window-cv-heatmap).
 
@@ -243,7 +243,7 @@ plot_SQI(SQIresult=result)
   <img width="70%" src="https://github.com/hyochoi/RNAdegrProjR/blob/main/figures/Allianceex_SQI_v058.png">
 </div>
 
-### Update gene body coverage with good quality samples
+### Update gene body coverage
 
 The gene body coverage plot updated after removing bad samples using the `plot_GBCg` function. The coverage patterns become much stable especially in the long genes. 
 A continuous lengend can be selected among ratio intron and PD for the plot.
