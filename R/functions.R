@@ -292,36 +292,45 @@ scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, sca
 get_metrics = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE, margin) {
 
   scale.log.normlist = scale_pileup.list(pileupPath, geneNames, rnum=rnum, method=method, scale=TRUE)
-  mar = list(2, 3, 2:3)
+  mar <- list(2, 3, 2:3)
+  array_data <- simplify2array(scale.log.normlist)
 
-  if (margin==1 | margin==2 | margin==3) {
+  if (margin %in% 1:3) {
     # Use positive values only; if all values are 0 then all stats are 0
-    var.sum <- as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) sum(x^2)))
-    var.mean <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) mean(ifelse(x>0, x, NA), na.rm=TRUE))))
-    var.sd <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) sd(ifelse(x>0, x, NA), na.rm=TRUE))))
-    CV <- 0*var.mean
-    CV[] <- ifelse((var.mean<1e-10 | var.sd<1e-10), 0, var.sd/var.mean) # to adjust NaN, Inf
-    var.median <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) median(ifelse(x>0, x, NA), na.rm=TRUE))))
-    var.mad <- ifelse(var.sum==0, 0, as.matrix(apply(simplify2array(scale.log.normlist), mar[[margin]], FUN=function(x) mad(ifelse(x>0, x, NA), na.rm=TRUE))))
-    robustCV <- 0*var.median
-    robustCV[] <- ifelse((var.median<1e-10 | var.mad<1e-10), 0, var.mad/var.median) # to adjust NaN, Inf
+    pos_mask <- array_data>0
+    var.sum <- apply(array_data, mar[[margin]], function(x) sum(x^2))
+    pos_data <- replace(array_data, !pos_mask, NA)  # replace non-positive values with NA
+    var.mean <- apply(pos_data, mar[[margin]], mean, na.rm=TRUE)
+    var.sd <- apply(pos_data, mar[[margin]], sd, na.rm=TRUE)
+    var.median <- apply(pos_data, mar[[margin]], median, na.rm=TRUE)
+    var.mad <- apply(pos_data, mar[[margin]], mad, na.rm=TRUE)
+    CV <- ifelse(var.mean<1e-10 | var.sd<1e-10, 0, var.sd/var.mean) # to adjust NaN, Inf
+    robustCV <- ifelse(var.median<1e-10 | var.mad<1e-10, 0, var.mad/var.median)
 
   } else {
-    stop(margin," is not an option for margin.")
+    stop(margin, " is not an option for margin.")
   }
 
-  if (margin==1 | margin==2) {
-    metrics <- data.frame(var.mean, var.sd, CV, var.median, var.mad, robustCV)
-    colnames(metrics) <- c("mean", "sd", "CV", "median", "mad", "robustCV")
+  # Assemble the metrics
+  if (margin %in% 1:2) {
+    metrics <- data.frame(
+      mean=var.mean,
+      sd=var.sd,
+      CV=CV,
+      median=var.median,
+      mad=var.mad,
+      robustCV=robustCV
+    )
 
   } else if (margin==3) {
-    vec.mean = convert_pivot.longer(var.mean, c("sample", "gene", "mean"))
-    vec.sd = convert_pivot.longer(var.sd, c("sample", "gene", "sd"))
-    vec.CV = convert_pivot.longer(CV, c("sample", "gene", "CV"))
-    vec.median = convert_pivot.longer(var.median, c("sample", "gene", "median"))
-    vec.mad = convert_pivot.longer(var.mad, c("sample", "gene", "mad"))
-    vec.robustCV = convert_pivot.longer(robustCV, c("sample", "gene", "robustCV"))
-    metrics <- data.frame(vec.mean, vec.sd[,c("sd")], vec.CV[,c("CV")], vec.median[,c("median")], vec.mad[,c("mad")], vec.robustCV[,c("robustCV")])
+    metrics <- data.frame(
+      convert_pivot.longer(var.mean, c("sample", "gene", "mean")),
+      sd=convert_pivot.longer(var.sd, c("sample", "gene", "sd"))[, "sd"],
+      CV=convert_pivot.longer(CV, c("sample", "gene", "CV"))[, "CV"],
+      median=convert_pivot.longer(var.median, c("sample", "gene", "median"))[, "median"],
+      mad=convert_pivot.longer(var.mad, c("sample", "gene", "mad"))[, "mad"],
+      robustCV=convert_pivot.longer(robustCV, c("sample", "gene", "robustCV"))[, "robustCV"]
+    )
   }
 
   return(metrics)
