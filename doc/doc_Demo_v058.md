@@ -25,7 +25,6 @@ We need datasets such as `genelist`, coverage `pileup`, and `sampleInfo` to obta
   - `INTRONIC_BASES`: number of bases in primary alignments that align to an intronic base for some gene, and not a coding or UTR base
   - `INTERGENIC_BASES`: number of bases in primary alignments that do not align to any gene
   - `RINs`: RIN value
-  - `RatioIntron`: ratio of intronic bases and coding bases
 
 ### Alliance
 This example consists of 1,000 selected genes among protein coding and lncRNA genes and fresh frozen and total RNA-seq (FFT) 171 samples, which can be found in [data](https://github.com/hyochoi/RNAdegrProjR/tree/main/data).
