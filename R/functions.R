@@ -574,7 +574,7 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
     distinct(Sample)
   group_mapping$group_id <- as.numeric(factor(group_mapping$Sample))
   smoothData <- smoothData %>%
-    mutate(Sample=group_mapping$Sample[smoothData$group])
+    mutate(Sample=group_mapping$Sample[group])
 
   # Range of MCD
   posMCD <- MCD[MCD>0]
