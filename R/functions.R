@@ -1,50 +1,15 @@
-convert_BAM2pileup <- function(genelist, regions, outputType="part_intron", BAMfiles, caseIDs, outputdir, batchSize=16) {
+gen_pileup <- function(Gene, regions, outputType="part_intron", BAMfiles, caseIDs, outputdir) {
 
-  # Split genelist into batches
-  batches <- split(seq_along(genelist), ceiling(seq_along(genelist)/batchSize))
-
-  # Process each batch
-  for (batch in batches) {
-    cat("Processing batch:", paste(range(batch), collapse="-"), "of", length(genelist), "\n")
-
-    # cl <- makeCluster(parallel::detectCores()-1)
-    cl <- makeCluster(parallel::detectCores()-1, type="SOCK")
-    registerDoParallel(cl)
-    on.exit(stopCluster(cl), add=TRUE)
-
-    foreach(g=batch, .packages=c("SCISSOR", "data.table", "GenomicAlignments", "Rsamtools"), .combine='c', .multicombine=TRUE, .maxcombine=100) %dopar%
-      {
-        # Update regions for genelist
-        regions <- as.data.frame(regions)[match(genelist, regions$gene_name), ]
-
-        # Get each pileup
-        Gene <- as.character(regions[g, c("gene_name")])
-        Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regions[g, c("regions")]), outputType=outputType)
-        new.regions = Ranges$new.regions
-        pileup = SCISSOR::read_BAM(BAMfiles=BAMfiles, caseIDs=caseIDs, regions=new.regions)
-
-        save(pileup, new.regions, Ranges,
-             file=paste0(outputdir, Gene, "_pileup_", outputType, ".RData"))
-      }
-    stopCluster(cl)
+  if (!Gene %in% regions$gene_name) {
+    stop(Gene, " is not in gene_name of SCISSOR_gaf.txt")
   }
 
-  cat("Processing completed for all batches.\n")
-}
+  rid <- match(Gene, regions$gene_name)
+  Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regions[rid, c("regions")]), outputType=outputType)
+  regions = Ranges$new.regions
+  pileup = SCISSOR::read_BAM(BAMfiles=BAMfiles, caseIDs=caseIDs, regions=regions)
 
-
-convert_BAM2pileup.gene <- function(g, genelist, regions, outputType="part_intron", BAMfiles, caseIDs, outputdir) {
-
-  # Update regions for genelist
-  regions <- as.data.frame(regions)[match(genelist, regions$gene_name), ]
-
-  # Get each pileup
-  Gene <- as.character(regions[g, c("gene_name")])
-  Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regions[g, c("regions")]), outputType=outputType)
-  new.regions = Ranges$new.regions
-  pileup = SCISSOR::read_BAM(BAMfiles=BAMfiles, caseIDs=caseIDs, regions=new.regions)
-
-  save(pileup, new.regions, Ranges, file=paste0(outputdir, Gene, "_pileup_", outputType, ".RData"))
+  save(pileup, regions, Ranges, file=paste0(outputdir, Gene, "_pileup_", outputType, ".RData"))
 }
 
 
