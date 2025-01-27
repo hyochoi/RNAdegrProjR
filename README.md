@@ -14,6 +14,17 @@ Choi, W., Yeon, M., Lee, J., Choi, H., Hayes, D.N.(2025+).
 
 
 ## Installation
+- From GitHub
+  ```r
+  if (!requireNamespace("devtools", quietly=TRUE)) {install.packages("devtools")}
+  devtools::install_github("hyochoi/RNAdegrProjR", dependencies=TRUE)
+  ```
+
+- From Bioconductor
+  ```r
+  if (!requireNamespace("BiocManager", quietly=TRUE)) {install.packages("BiocManager")}
+  BiocManager::install("RNAdegrProjR", dependencies=TRUE)
+  ```
 
 
 ## Documentation
