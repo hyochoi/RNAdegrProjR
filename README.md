@@ -9,6 +9,10 @@ Despite easy storage and cost-effectiveness advantages, formalin-fixed paraffin-
 </div>
 
 
+## Documentation
+The documentation and demo are available at [RNAdegrDemo](https://bookdown.org/sqr_yeon/RNAdegrDemo/).
+
+
 ## Citation
 Choi, W., Yeon, M., Lee, J., Choi, H., Hayes, D.N.(2025+).
 
@@ -25,7 +29,3 @@ Choi, W., Yeon, M., Lee, J., Choi, H., Hayes, D.N.(2025+).
   if (!requireNamespace("BiocManager", quietly=TRUE)) {install.packages("BiocManager")}
   BiocManager::install("RNAdegrProjR", dependencies=TRUE)
   ```
-
-
-## Documentation
-The documentation and demo are available at [RNAdegrDemo](https://bookdown.org/sqr_yeon/RNAdegrDemo/).
