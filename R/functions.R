@@ -1,15 +1,26 @@
-gen_pileup <- function(Gene, regions, outputType="part_intron", BAMfiles, caseIDs, outputdir) {
+#' Generate a pileup from BAM files
+#'
+#' @param Gene a character of gene name
+#' @param regionsFile a region info file named SCISSOR_gaf.txt
+#' @param BAMfiles a full path of BAM files from _Samtools_
+#' @param caseIDs sample IDs
+#' @param outputdir a directory to save outputs
+#' @return a pileup matrix, regions, and ranges of genomic positions
+#' @import SCISSOR
+#' @export
 
-  if (!Gene %in% regions$gene_name) {
+gen_pileup <- function(Gene, regionsFile, BAMfiles, caseIDs, outputdir) {
+
+  if (!Gene %in% regionsFile$gene_name) {
     stop(Gene, " is not in gene_name of SCISSOR_gaf.txt")
   }
 
-  rid <- match(Gene, regions$gene_name)
-  Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regions[rid, c("regions")]), outputType=outputType)
+  rid <- match(Gene, regionsFile$gene_name)
+  Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regionsFile[rid, c("regions")]), outputType="part_intron")
   regions = Ranges$new.regions
   pileup = SCISSOR::read_BAM(BAMfiles=BAMfiles, caseIDs=caseIDs, regions=regions)
 
-  save(pileup, regions, Ranges, file=paste0(outputdir, Gene, "_pileup_", outputType, ".RData"))
+  save(pileup, regions, Ranges, file=paste0(outputdir, Gene, "_pileup_part_intron.RData"))
 }
 
 
