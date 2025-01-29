@@ -15,9 +15,8 @@ gen_pileup <- function(Gene, regionsFile, BAMfiles, caseIDs, outputdir) {
     stop(Gene, " is not in gene_name of SCISSOR_gaf.txt")
   }
 
-  rid <- match(Gene, regionsFile$gene_name)
-  Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=as.character(regionsFile[rid, c("regions")]), outputType="part_intron")
-  regions = Ranges$new.regions
+  regions <- as.character(regionsFile[match(Gene, regionsFile$gene_name), c("regions")])
+  Ranges = SCISSOR::get_Ranges(Gene=Gene, regions=regions, outputType="part_intron")
   pileup = SCISSOR::read_BAM(BAMfiles=BAMfiles, caseIDs=caseIDs, regions=regions)
 
   save(pileup, regions, Ranges, file=paste0(outputdir, Gene, "_pileup_part_intron.RData"))
