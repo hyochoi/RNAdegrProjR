@@ -100,9 +100,9 @@ plot_GAP = function(sampleInfo, plot=TRUE) {
 
 filter_lowExpGenes = function(genelist, TPM, thru=5, pct=50) {
 
-  TPM.proteincoding <- na.omit(TPM[match(genelist, rownames(TPM)), ])
-  rows_to_keep <- apply(TPM.proteincoding, 1, function(row) {mean(row<thru) < pct/100})
-  genelist2 <- rownames(TPM.proteincoding[rows_to_keep, , drop=FALSE])
+  TPMmat <- na.omit(TPM[match(genelist, rownames(TPM)), ])
+  rows_to_keep <- apply(TPMmat, 1, function(row) {mean(row<thru) < pct/100})
+  genelist2 <- rownames(TPMmat[rows_to_keep, , drop=FALSE])
 
   return(genelist2)
 }
@@ -390,7 +390,7 @@ plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
 
   # Update with good quality samples and PD
   GBP <- GBCresult$GBP %>%
-    filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Good", c("Sample")])$Sample) %>%
+    dplyr::filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Good", c("Sample")])$Sample) %>%
     inner_join(auc.vec %>% select(Sample, PD), by=c("sample"="Sample"))
 
   if (plot) {
@@ -557,7 +557,7 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
   rangeMax = log10(quantile(posMCD, probs=1-rstPct/100, na.rm=TRUE)+1)
 
   auc.vec <- smoothData %>%
-    filter(x>=rangeMin & x<rangeMax) %>% # restricted MCD
+    dplyr::filter(x>=rangeMin & x<rangeMax) %>% # restricted MCD
     group_by(Sample) %>%
     summarise(AUC=DescTools::AUC(x, y, method="spline")) %>% # calculate AUC
     mutate(PD=SCISSOR::pd.rate.hy(AUC, qrsc=TRUE), # projection depth
