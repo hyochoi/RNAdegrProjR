@@ -85,7 +85,7 @@ plot_GAP = function(sampleInfo, plot=TRUE) {
     # print(p)
   }
 
-  return(list(PCTmat=PCTmat, plot=p))
+  return(list(PCTdf=PCTdf, plot=p))
 }
 
 
