@@ -10,7 +10,7 @@ Despite easy storage and cost-effectiveness advantages, formalin-fixed paraffin-
 
 
 ## Documentation
-The documentation and demo are available at [RNAdegrDemo](https://bookdown.org/sqr_yeon/RNAdegrDemo/).
+The documentation and demo are available at [RNAdegrDocs](https://bookdown.org/sqr_yeon/RNAdegrDocs/).
 
 
 ## Citation
