@@ -9,7 +9,7 @@
 #' @import SCISSOR
 #' @export
 
-gen_pileup <- function(Gene, regionsFile, BAMfiles, caseIDs, outputdir) {
+gen_pileup = function(Gene, regionsFile, BAMfiles, caseIDs, outputdir) {
 
   if (!Gene %in% regionsFile$gene_name) {
     stop(Gene, " is not in gene_name of SCISSOR_gaf.txt")
@@ -31,13 +31,22 @@ gen_pileup <- function(Gene, regionsFile, BAMfiles, caseIDs, outputdir) {
 #' @import SCISSOR
 #' @export
 
-get_pileupExon = function(g, pileupPath) {
+get_pileupExon = function(g, pileupPath, cases=NULL) {
+
+  if (!file.exists(pileupPath[g])) {
+    return(NULL)
+  }
 
   load(file=pileupPath[g])
 
   # Keep exon location of union transcripts in pileup
   pileupData = SCISSOR::build_pileup(Pileup=pileup, regions=regions, inputType="part_intron", outputType="only_exon")
   colnames(pileupData) <- colnames(pileup) # to keep the original sample IDs
+
+  # Keep selected samples
+  if (!is.null(cases)) {
+    pileupData = pileupData[, match(cases, colnames(pileupData))]
+  }
 
   return(pileupData)
 }
@@ -85,7 +94,7 @@ plot_GAP = function(sampleInfo, plot=TRUE) {
     # print(p)
   }
 
-  return(list(PCTdf=PCTdf, plot=p))
+  return(list(PCTmat=PCTmat, plot=p))
 }
 
 
@@ -100,9 +109,9 @@ plot_GAP = function(sampleInfo, plot=TRUE) {
 
 filter_lowExpGenes = function(genelist, TPM, thru=5, pct=50) {
 
-  TPMmat <- na.omit(TPM[match(genelist, rownames(TPM)), ])
-  rows_to_keep <- apply(TPMmat, 1, function(row) {mean(row<thru) < pct/100})
-  genelist2 <- rownames(TPMmat[rows_to_keep, , drop=FALSE])
+  TPM.proteincoding <- na.omit(TPM[match(genelist, rownames(TPM)), ])
+  rows_to_keep <- apply(TPM.proteincoding, 1, function(row) {mean(row<thru) < pct/100})
+  genelist2 <- rownames(TPM.proteincoding[rows_to_keep, , drop=FALSE])
 
   return(genelist2)
 }
@@ -185,14 +194,16 @@ norm_pileup.gene = function(pileupData, rnum=100, method=1) {
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a rnum x the number of samples matrix at each gene list.
 #' @references https://github.com/hyochoi/SCISSOR
-#' @import
 #' @export
 
-norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
+norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, cases=NULL) {
 
   if (is.null(geneNames)) {
     geneNames = paste0("Gene_", c(1:length(pileupPath)))
   }
+
+  geneNames <- geneNames[file.exists(pileupPath)]
+  pileupPath <- pileupPath[file.exists(pileupPath)]
 
   if(length(pileupPath)!=length(geneNames)) {
     stop("pileupPath must be the same length as geneNames")
@@ -201,7 +212,7 @@ norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
     pileupList <- list()
     for (g in 1:length(pileupPath)){
       pileupList[[g]] <- list()
-      pileupList[[g]] <- get_pileupExon(g, pileupPath)
+      pileupList[[g]] <- get_pileupExon(g, pileupPath, cases)
     }
     if (method==1 | method==2) {
       # Method 1: Raw value
@@ -231,10 +242,10 @@ norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1) {
 #' @references https://github.com/hyochoi/SCISSOR
 #' @export
 
-scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE) {
+scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE, cases=NULL) {
 
   # Gene length normalization
-  normlist = norm_pileup.list(pileupPath, geneNames=NULL, rnum=rnum, method=method)
+  normlist = norm_pileup.list(pileupPath, geneNames, rnum=rnum, method=method, cases=cases)
 
   # Log-transformation
   log.normlist = lapply(normlist, FUN=function(x) log10(x+1))
@@ -390,7 +401,7 @@ plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
 
   # Update with good quality samples and PD
   GBP <- GBCresult$GBP %>%
-    dplyr::filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Good", c("Sample")])$Sample) %>%
+    filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Optimal", c("Sample")])$Sample) %>%
     inner_join(auc.vec %>% select(Sample, PD), by=c("sample"="Sample"))
 
   if (plot) {
@@ -438,15 +449,15 @@ plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
 #' @import foreach doParallel SCISSOR parallel
 #' @export
 
-get_MCD = function(genelist, pileupPath, sampleInfo) {
+get_MCD = function(genelist, pileupPath, sampleInfo, cases=NULL) {
   cl <- makeCluster(parallel::detectCores()-1)
   registerDoParallel(cl)
   on.exit(stopCluster(cl), add=TRUE)
 
   MCD <- foreach(g=1:length(pileupPath), .combine=rbind, .packages=c("SCISSOR"), .export=c("get_pileupExon")) %dopar%
     {
-      pileupData = get_pileupExon(g, pileupPath)
-      if (nrow(pileupData) > 0) {
+      pileupData = get_pileupExon(g, pileupPath, cases)
+      if (!is.null(pileupData) && nrow(pileupData) > 0) {
         # Use positive values only; if all values are 0 then all stats are 0
         sum <- colSums(pmax(pileupData, 0), na.rm=TRUE)
         n <- colSums(pileupData>0, na.rm=TRUE)
@@ -475,7 +486,7 @@ get_MCD = function(genelist, pileupPath, sampleInfo) {
 #' @import foreach doParallel SCISSOR zoo parallel
 #' @export
 
-get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10) {
+get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10, cases=NULL) {
 
   if (!(2<=winSize && winSize<=rnum)) {
     stop("The window size ", winSize, " should be in [2, ", rnum, "].")
@@ -485,12 +496,13 @@ get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSiz
   registerDoParallel(cl)
   on.exit(stopCluster(cl), add=TRUE)
 
-  wCV <- foreach(g=1:length(pileupPath), .combine=rbind, .packages=c("SCISSOR", "zoo", "parallel"), .export=c("get_pileupExon", "norm_pileup.gene", "norm_pileup.spl")) %dopar%
+  # wCV <- foreach(g=1:length(pileupPath), .combine=rbind, .packages=c("SCISSOR", "zoo", "parallel"), .export=c("get_pileupExon", "norm_pileup.gene", "norm_pileup.spl")) %dopar%
+  wCV <- foreach(g=1:length(pileupPath), .combine=rbind, .packages=c("SCISSOR", "zoo", "parallel")) %dopar%
     {
-      pileupData = get_pileupExon(g, pileupPath)
-      if (nrow(pileupData) > 0) {
+      pileupData = NonuniDemo::get_pileupExon(g, pileupPath, cases)
+      if (!is.null(pileupData) && nrow(pileupData) > 0) {
         # Normalization
-        norm_pileup = norm_pileup.gene(pileupData, rnum=rnum, method=method)
+        norm_pileup = NonuniDemo::norm_pileup.gene(pileupData, rnum=rnum, method=method)
 
         # Rolling CV in each sample
         rmean <- zoo::rollmean(norm_pileup, winSize, fill=NA, align="center", by.column=TRUE)
@@ -530,7 +542,7 @@ get_wCV <- function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSiz
 #' @import ggplot2 DescTools SCISSOR tidyverse dplyr
 #' @export
 
-get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
+get_SQI = function(MCD, wCV, rstPct=20, obsPct=50, cutoff=3) {
 
   auc.coord <- na.omit(data.frame(Gene=rep(rownames(MCD), ncol(MCD)),
                                   Sample=rep(colnames(MCD), each=nrow(MCD)),
@@ -557,11 +569,11 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
   rangeMax = log10(quantile(posMCD, probs=1-rstPct/100, na.rm=TRUE)+1)
 
   auc.vec <- smoothData %>%
-    dplyr::filter(x>=rangeMin & x<rangeMax) %>% # restricted MCD
+    filter(x>=rangeMin & x<rangeMax) %>% # restricted MCD
     group_by(Sample) %>%
     summarise(AUC=DescTools::AUC(x, y, method="spline")) %>% # calculate AUC
     mutate(PD=SCISSOR::pd.rate.hy(AUC, qrsc=TRUE), # projection depth
-           SQI=ifelse(PD>3, "Bad", "Good")) # outlier detection
+           SQI=ifelse(PD>cutoff, "Suboptimal", "Optimal")) # outlier detection
 
   auc.coord <- smoothData %>%
     select(x, y, Sample) %>%
@@ -579,7 +591,7 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50) {
 #' @import ggplot2 tidyverse dplyr scales tibble ggpubr
 #' @export
 
-plot_SQI = function(SQIresult) {
+plot_SQI = function(SQIresult, cutoff=3) {
 
   auc.vec2 <- result$auc.vec[, c("AUC", "PD")]
   auc.coord <- result$auc.coord
@@ -588,14 +600,14 @@ plot_SQI = function(SQIresult) {
                    value=as.vector(as.matrix(auc.vec2)))
   df$var <- factor(df$var, levels=rev(colnames(auc.vec2)), ordered=TRUE)
 
-  # Distribution of SQI by PD
+  # Distribution of PD by SQI
   d <- df %>%
     ggplot2::ggplot(aes(x=var, y=value, fill=var)) +
     geom_flat_violin(position=position_nudge(x=0.2), alpha=0.4) +
     geom_point(aes(color=case_when(
       var=="AUC" ~ "grey",
-      var=="PD" & value>3 ~ "red",
-      var=="PD" & value<=3 ~ "darkgreen")),
+      var=="PD" & value>cutoff ~ "red",
+      var=="PD" & value<=cutoff ~ "darkgreen")),
       position=position_jitter(w=0.15, seed=12345), size=1.5, alpha=0.5, show.legend=F) +
     geom_boxplot(width=0.25, outlier.shape=NA, alpha=0.5) +
     scale_fill_manual(values=c(rep("grey", 2))) +
@@ -610,9 +622,11 @@ plot_SQI = function(SQIresult) {
     coord_flip()
 
   # Relation of wCV and MCD
+  auc.coord$SQI <- factor(auc.coord$SQI, levels=c("Suboptimal", "Optimal"))
+
   p <- ggplot2::ggplot(auc.coord, aes(x=x, y=y, group=Sample, color=SQI)) +
     geom_line(size=1) +
-    scale_color_manual(values=c("Bad"=scales::alpha("red", 0.5), "Good"=scales::alpha("darkgreen", 0.5))) + # SQI per sample
+    scale_color_manual(values=c("Suboptimal"=scales::alpha("red", 0.5), "Optimal"=scales::alpha("darkgreen", 0.5))) + # SQI per sample
     geom_rect(data=tibble::tibble(x1=rangeMCD[1], x2=rangeMCD[2], y1=-Inf, y2=+Inf),
               inherit.aes=FALSE,
               mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2),
@@ -620,11 +634,12 @@ plot_SQI = function(SQIresult) {
               fill="blue",
               alpha=0.07) +
     xlab(expression(paste(log[10], "(MCD+1)"))) + ylab("wCV") +
+    coord_cartesian(xlim = c(min(auc.coord$x), (2*rangeMCD[2]-rangeMCD[1]))) +
     guides(size="none") +
     theme(axis.text=element_text(size=25),
           axis.title=element_text(size=25),
           legend.title=element_text(size=18, face="bold"),
-          legend.position=c(0.85, 0.85),
+          legend.position=c(0.80, 0.85),
           legend.background=element_rect(colour=NA, fill=NA),
           legend.text=element_text(size=18),
           panel.background=element_rect(fill="gray97"))
