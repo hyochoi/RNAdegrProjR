@@ -27,6 +27,7 @@ gen_pileup = function(Gene, regionsFile, BAMfiles, caseIDs, outputdir) {
 #'
 #' @param g the gene order in genelist
 #' @param pileupPath file paths of coverage pileupData including .RData file names
+#' @param cases a vector of specific samples among all samples in pileup. If NULL, all samples are selected. Default is NULL.
 #' @return a focused pileup is a the number of exon locations x the number of samples matrix for the g-th gene.
 #' @import SCISSOR
 #' @export
@@ -57,7 +58,7 @@ get_pileupExon = function(g, pileupPath, cases=NULL) {
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
 #' @param plot TRUE/FALSE turns on/off the genome alignment profiles plot. Default is TRUE.
 #' @return a matrix and a plot, or a matrix for the percentages of sample properties where plot is TRUE or FALSE, respectively.
-#' @import tidyverse dplyr ggplot2
+#' @import dplyr ggplot2
 #' @export
 
 plot_GAP = function(sampleInfo, plot=TRUE) {
@@ -127,7 +128,7 @@ filter_lowExpGenes = function(genelist, TPM, thru=5, pct=50) {
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @return the normalized read depth is a vector with length=rnum.
-#' @references https://github.com/hyochoi/SCISSOR
+#' @references Choi, H.Y., Jo, H., Zhao, X. et al. SCISSOR: a framework for identifying structural changes in RNA transcripts. Nat Commun 12, 286 (2021).
 #' @import zoo
 #' @export
 
@@ -166,12 +167,13 @@ norm_pileup.spl = function(pileup, rnum=100, method=1) {
 #' @param pileupData a coverage pileup matrix that columns are samples
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
+#' @param nCores the number of cores for parallel computing. Default is 32.
 #' @return the normalized read depth is a rnum x the number of samples matrix.
-#' @references https://github.com/hyochoi/SCISSOR
+#' @references Choi, H.Y., Jo, H., Zhao, X. et al. SCISSOR: a framework for identifying structural changes in RNA transcripts. Nat Commun 12, 286 (2021).
 #' @import parallel
 #' @export
 
-norm_pileup.gene = function(pileupData, rnum=100, method=1) {
+norm_pileup.gene = function(pileupData, rnum=100, method=1, nCores=32) {
 
   if (!(method %in% c(1, 2))) {
     stop(method, " is not an option for method.")
@@ -179,7 +181,8 @@ norm_pileup.gene = function(pileupData, rnum=100, method=1) {
 
   normmat.gene <- do.call(cbind, parallel::mclapply(seq_len(ncol(pileupData)), function(i) {
     norm_pileup.spl(pileup=pileupData[, i], rnum=rnum, method=method)
-  }, mc.cores=parallel::detectCores()/2))
+    # }, mc.cores=parallel::detectCores()/2))
+  }, mc.cores=nCores/2))
   colnames(normmat.gene) <- colnames(pileupData)
 
   return(normmat.gene)
@@ -192,8 +195,9 @@ norm_pileup.gene = function(pileupData, rnum=100, method=1) {
 #' @param geneNames gene names per file. If NULL, Gene i with the same length of pileupPath be set. Default is NULL.
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
+#' @param cases a vector of specific samples among all samples in pileup. If NULL, all samples are selected. Default is NULL.
 #' @return the normalized read depth is a rnum x the number of samples matrix at each gene list.
-#' @references https://github.com/hyochoi/SCISSOR
+#' @references Choi, H.Y., Jo, H., Zhao, X. et al. SCISSOR: a framework for identifying structural changes in RNA transcripts. Nat Commun 12, 286 (2021).
 #' @export
 
 norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, cases=NULL) {
@@ -238,8 +242,9 @@ norm_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, case
 #' @param rnum the number of regions for uniformly dividing the x-axis. Default is 100.
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @param scale TRUE/FALSE returns the scaled/unscaled normalized transcript coverage. Default is TRUE.
+#' @param cases a vector of specific samples among all samples in pileup. If NULL, all samples are selected. Default is NULL.
 #' @return gene lists (rows are regions and columns are samples) for the normalized transcript coverage after gene length normalization
-#' @references https://github.com/hyochoi/SCISSOR
+#' @references Choi, H.Y., Jo, H., Zhao, X. et al. SCISSOR: a framework for identifying structural changes in RNA transcripts. Nat Commun 12, 286 (2021).
 #' @export
 
 scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE, cases=NULL) {
@@ -272,7 +277,7 @@ scale_pileup.list = function(pileupPath, geneNames=NULL, rnum=100, method=1, sca
 #' @param scale TRUE/FALSE returns the scaled/unscaled normalized transcript coverage. Default is TRUE.
 #' @param margin 1, 2, and 3 return metrics per sample, per gene, and across the genes per sample, respectively.
 #' @return metrics including mean, sd, CV (sd/mean), median, mad, and robustCV (mad/median) per margin
-#' @references https://github.com/hyochoi/SCISSOR
+#' @references Choi, H.Y., Jo, H., Zhao, X. et al. SCISSOR: a framework for identifying structural changes in RNA transcripts. Nat Commun 12, 286 (2021).
 #' @export
 
 get_metrics = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRUE, margin) {
@@ -334,7 +339,7 @@ get_metrics = function(pileupPath, geneNames=NULL, rnum=100, method=1, scale=TRU
 #' @param plot TRUE/FALSE turns on/off the normalized transcript coverage plot. Default is TRUE.
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
 #' @return a matrix and a plot, or a matrix for the gene body coverage where plot is TRUE or FALSE, respectively.
-#' @import tidyverse dplyr RColorBrewer ggplot2 matrixStats
+#' @import dplyr RColorBrewer ggplot2 matrixStats
 #' @export
 
 plot_GBC = function(pileupPath, geneNames, rnum=100, method=1, scale=TRUE, stat=2, plot=TRUE, sampleInfo) {
@@ -386,22 +391,22 @@ plot_GBC = function(pileupPath, geneNames, rnum=100, method=1, scale=TRUE, stat=
 }
 
 
-#' Plot gene body coverage with good quality samples
+#' Plot gene body coverage with optimal samples
 #'
 #' @param stat 1 and 2 return median and mean normalized coverage curves per sample, respectively. Default is 1.
 #' @param plot TRUE/FALSE turns on/off the normalized transcript coverage plot. Default is TRUE.
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
 #' @param GBCresult results of the gene body coverage with all samples
-#' @param auc.vec a vector with SQI per sample
+#' @param auc.vec a vector with SOI per sample
 #' @return a matrix and a plot, or a matrix for the gene body coverage where plot is TRUE or FALSE, respectively.
-#' @import tidyverse dplyr RColorBrewer ggplot2
+#' @import dplyr RColorBrewer ggplot2
 #' @export
 
 plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
 
-  # Update with good quality samples and PD
+  # Update with optimal samples and PD
   GBP <- GBCresult$GBP %>%
-    filter(sample %in% as.vector(auc.vec[auc.vec$SQI=="Optimal", c("Sample")])$Sample) %>%
+    filter(sample %in% as.vector(auc.vec[auc.vec$SOI=="Optimal", c("Sample")])$Sample) %>%
     inner_join(auc.vec %>% select(Sample, PD), by=c("sample"="Sample"))
 
   if (plot) {
@@ -437,7 +442,215 @@ plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
 
 
 ## -------------------------------------------------
-## Sample Quality Index
+## Degraded/Intact Index
+## -------------------------------------------------
+
+#' Get a decay rate (DR) for genes and samples
+#'
+#' @param genelist a vector of gene names
+#' @param pileupPath file paths of coverage pileupData including .RData file names
+#' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
+#' @param cases a vector of specific samples among all samples in pileup. If NULL, all samples are selected. Default is NULL.
+#' @param nCores the number of cores for parallel computing. Default is 32.
+#' @return DR is a the number of genes x the number of samples matrix.
+#' @references Choi, H.Y., Jo, H., Zhao, X. et al. SCISSOR: a framework for identifying structural changes in RNA transcripts. Nat Commun 12, 286 (2021).
+#' @import foreach doParallel SCISSOR parallel DataWrangler
+#' @export
+
+get_decayRate = function(genelist, pileupPath, sampleInfo, cases=NULL, nCores=32) {
+  # cl <- makeCluster(parallel::detectCores()-1)
+  cl <- makeCluster(nCores)
+  registerDoParallel(cl)
+  on.exit(stopCluster(cl), add=TRUE)
+
+  DR <- foreach(g=1:length(pileupPath), .combine=rbind, .packages=c("SCISSOR"), .export=c("get_pileupExon")) %dopar%
+    {
+      # Get exon-only coverage
+      pileupData = get_pileupExon(g, pileupPath, cases)
+
+      if (!is.null(pileupData) && nrow(pileupData) > 0) {
+        # Ranges from part_intron to only_exon
+        Gene <- genelist[g]
+        Ranges <- DataWrangler::extractorRData(pileupPath[g], "Ranges")
+        exonRanges <- SCISSOR::get_Ranges(Gene=Gene, regions=Ranges$regions, outputType="only_exon")
+
+        # For all samples
+        d <- dim(pileupData)[1]
+        data.process <- SCISSOR::process_pileup(pileupData=pileupData, Ranges=exonRanges, logshiftVal=10, plotNormalization=F)
+        allSampleDegRate <- SCISSOR::decay.rate.hy(Data=data.process$normalizedData)$slope*d
+        names(allSampleDegRate) <- colnames(pileupData)
+        allSampleDegRate
+        # allSampleMSF <- data.process$msf
+      } else {
+        rep(NA, nrow(sampleInfo))
+      }
+    }
+  rownames(DR) <- genelist
+
+  return(DR)
+  stopCluster(cl)
+}
+
+
+#' Get a degraded/intact index (DII) for samples
+#'
+#' @param DR a the number of genes x the number of samples matrix of decay rates
+#' @param topPct top percentages of decay rates defined as degrateGrp=1. Default is 5.
+#' @return a matrix of binary converted decay rates; hierarchical clustering outputs of samples; and a vector of DII per sample.
+#' @import dendextend dplyr
+#' @export
+
+get_DII = function(DR, topPct=5) {
+
+  degrateGrp <- ifelse(DR.mat>=quantile(DR.mat, 1-topPct/100), 1, 0)
+  hc_columns <- hclust(dist(t(degrateGrp), method="manhattan"), method="ward.D")
+
+  # Convert to dendrogram
+  dend_columns <- as.dendrogram(hc_columns)
+
+  hd.vec <- data.frame(Sample=hc_columns$labels,
+                       Cluster=dendextend::cutree(dend_columns, k=2)) %>%
+    mutate(DII=ifelse(Cluster==1, "Intact", "Degraded"))
+
+  return(list(degrateGrp=degrateGrp, hc_columns=hc_columns, hd.vec=hd.vec))
+}
+
+
+#' Plot degraded/intact index (DII) outputs
+#'
+#' @param DIIresult outputs from get_DII function
+#' @param DR a the number of genes x the number of samples matrix of decay rates
+#' @param topPct top percentages of decay rates defined as degrateGrp=1. Default is 5.
+#' @param outFile a full path with an output file name to save the figure as png
+#' @return figure for decay rates and identified degraded cases.
+#' @references Choi, H.Y., Jo, H., Zhao, X. et al. SCISSOR: a framework for identifying structural changes in RNA transcripts. Nat Commun 12, 286 (2021).
+#' @import ComplexHeatmap magick grid
+#' @export
+
+plot_DII = function(DIIresult, DR, topPct=5, outFile) {
+
+  degrateGrp <- DIIresult$degrateGrp
+  hc_columns <- DIIresult$hc_columns
+
+  # degrateGrp
+  col_id = c("0"="papayawhip", "1"="tan4")
+
+  # Cut the dendrogram into clusters and color them with custom colors
+  dend_columns <- dendextend::color_branches(as.dendrogram(hc_columns), k=2, col=c("mediumaquamarine", "#7C3F11"))
+
+  # Create the heatmap with custom dendrograms
+  hm.degrate <- Heatmap(degrateGrp, name="Degrate", col=col_id,
+                        cluster_columns=dend_columns,
+                        column_split=2,
+                        column_dend_height=unit(1.5, "cm"),
+                        show_column_dend=TRUE, show_column_names=FALSE,
+                        column_title=c("Intact", "Degraded"), column_title_gp=gpar(fontsize=18),
+                        column_gap=unit(5, "mm"),
+                        cluster_rows=FALSE,
+                        show_row_dend=FALSE, show_row_names=FALSE,
+                        use_raster = TRUE,
+                        show_heatmap_legend=FALSE,
+                        width=unit(5, "in"), height=unit(5, "in")
+  )
+
+  # Density legend grob
+  densityLgd <- function(data, topPct) {
+    d <- density(data)
+    qt <- quantile(data, 1-topPct/100)
+
+    # Min, 0, Max values for x-axis
+    x_vals <- c(min(d$x), 0, max(d$x))
+    x_labels <- format(round(x_vals, 1), nsmall = 1)
+    x_pos <- (x_vals-min(d$x)) / (max(d$x)-min(d$x))
+    x0_pos <- x_pos[2]  # scaled x=0
+
+    # Scaled density for plotting
+    x_scaled <- (d$x-min(d$x)) / (max(d$x)-min(d$x))
+    y_scaled <- d$y / max(d$y)
+
+    gTree(children=gList(
+      # Background
+      rectGrob(gp=gpar(fill="papayawhip", col=NA)),
+      # topPct box
+      rectGrob(
+        x=unit((qt-min(d$x)) / (max(d$x)-min(d$x)), "npc"),
+        y=unit(0.5, "npc"),
+        width=unit((max(d$x)-qt) / (max(d$x)-min(d$x)), "npc"),
+        height=unit(1, "npc"),
+        just="left",
+        gp = gpar(fill="tan4", col = NA)
+      ),
+      # Density curve
+      linesGrob(
+        x=x_scaled,
+        y=y_scaled,
+        gp=gpar(col="mediumaquamarine", lwd=2)
+      ),
+      # Dotted line at x=0
+      segmentsGrob(
+        x0=unit(x0_pos, "npc"), x1=unit(x0_pos, "npc"),
+        y0=unit(0, "npc"), y1=unit(1, "npc"),
+        gp=gpar(col="black", lty="dotted", lwd=1)
+      ),
+      # X-axis ticks and labels
+      grobTree(
+        segmentsGrob(
+          x0=unit(x_pos, "npc"), x1=unit(x_pos, "npc"),
+          y0=unit(0, "npc"), y1=unit(-0.015, "npc"),
+          gp=gpar(col="black")
+        ),
+        textGrob(
+          label=x_labels,
+          x=unit(x_pos, "npc"),
+          y=unit(-0.2, "npc"),
+          just="center",
+          gp=gpar(fontsize=9)
+        )
+      ),
+      # topPct label
+      textGrob(
+        paste0("Top ", topPct, "%"),
+        x=unit(0.85, "npc"),
+        y=unit(0.8, "npc"),
+        gp=gpar(col="mediumaquamarine", fontsize=12)
+      ),
+      # Title
+      textGrob(
+        "Decay rate",
+        y=unit(-0.5, "npc"),
+        gp=gpar(fontsize=16)
+      )
+    ))
+  }
+
+  # Decay rates and identified degraded cases
+  png(file=outFile, width=10, height=10, units="in", res=600)
+  grid.newpage()
+  pushViewport(viewport(
+    y=unit(0.4, "npc"),
+    just="center"
+  ))
+
+  draw(hm.degrate, newpage=FALSE)
+  grid.text("DII",
+            x=unit(0.58, "npc"),
+            y=unit(0.8, "npc"),
+            gp=gpar(fontsize=18, fontface="bold"))
+
+  pushViewport(viewport(
+    x=unit(0.5, "npc"),
+    y=unit(1, "npc") - unit(5, "mm"),
+    just=c("center", "top"),
+    width=unit(5, "cm"),
+    height=unit(1.5, "cm")
+  ))
+  grid.draw(densityLgd(data=DR, topPct=topPct))
+  upViewport()
+}
+
+
+## -------------------------------------------------
+## Suboptimal/Optimal Index
 ## -------------------------------------------------
 
 #' Get a mean coverage depth (MCD) for genes and samples
@@ -445,12 +658,15 @@ plot_GBCg = function(stat=2, plot=TRUE, sampleInfo, GBCresult, auc.vec) {
 #' @param genelist a vector of gene names
 #' @param pileupPath file paths of coverage pileupData including .RData file names
 #' @param sampleInfo a sample information table including sample id. The number of rows is equal to the number of samples.
+#' @param cases a vector of specific samples among all samples in pileup. If NULL, all samples are selected. Default is NULL.
+#' @param nCores the number of cores for parallel computing. Default is 32.
 #' @return MCD is a the number of genes x the number of samples matrix.
 #' @import foreach doParallel SCISSOR parallel
 #' @export
 
-get_MCD = function(genelist, pileupPath, sampleInfo, cases=NULL) {
-  cl <- makeCluster(parallel::detectCores()-1)
+get_MCD = function(genelist, pileupPath, sampleInfo, cases=NULL, nCores=32) {
+  # cl <- makeCluster(parallel::detectCores()-1)
+  cl <- makeCluster(nCores)
   registerDoParallel(cl)
   on.exit(stopCluster(cl), add=TRUE)
 
@@ -482,17 +698,20 @@ get_MCD = function(genelist, pileupPath, sampleInfo, cases=NULL) {
 #' @param method 1 and 2 return the raw read depth and the interpolated read depth at the normalized genomic position, respectively. Default is 1.
 #' @param winSize window size of the rolling window. Default is 20.
 #' @param egPct edge percent (one-side) to calculate the trimmed mean. Default is 10.
+#' @param cases a vector of specific samples among all samples in pileup. If NULL, all samples are selected. Default is NULL.
+#' @param nCores the number of cores for parallel computing. Default is 32.
 #' @return wCV is a the number of genes x the number of samples matrix.
 #' @import foreach doParallel SCISSOR zoo parallel
 #' @export
 
-get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10, cases=NULL) {
+get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize=20, egPct=10, cases=NULL, nCores=32) {
 
   if (!(2<=winSize && winSize<=rnum)) {
     stop("The window size ", winSize, " should be in [2, ", rnum, "].")
   }
 
-  cl <- makeCluster(parallel::detectCores()-1)
+  # cl <- makeCluster(parallel::detectCores()-1)
+  cl <- makeCluster(nCores)
   registerDoParallel(cl)
   on.exit(stopCluster(cl), add=TRUE)
 
@@ -517,7 +736,8 @@ get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize
 
         wcv.vec <- unlist(parallel::mclapply(seq_len(ncol(cv.mat)), function(i) {
           trmean_col(cv.mat[, i], egPct/100)
-        }, mc.cores=parallel::detectCores()/2))
+          # }, mc.cores=parallel::detectCores()/2))
+        }, mc.cores=nCores/2))
         names(wcv.vec) <- colnames(cv.mat)
         wcv.vec
 
@@ -532,17 +752,17 @@ get_wCV = function(genelist, pileupPath, sampleInfo, rnum=100, method=1, winSize
 }
 
 
-#' Get a sample quality index (SQI) for samples
+#' Get a suboptimal/optimal (SOI) for samples
 #'
 #' @param MCD a mean coverage depth is a the number of genes x the number of samples matrix.
 #' @param wCV a window coefficient of variation is a the number of genes x the number of samples matrix.
 #' @param rstPct restricted percent (one-side) to restrict genes by log transformed MC. Default is 20.
 #' @param obsPct span includes the percent of observations in each local regression. Default is 50.
-#' @return a vector with SQI per sample; a coordinate matrix of smoothed data; and a range of MCD.
-#' @import ggplot2 DescTools SCISSOR tidyverse dplyr
+#' @return a vector with SOI per sample; a coordinate matrix of smoothed data; and a range of MCD.
+#' @import ggplot2 DescTools SCISSOR dplyr
 #' @export
 
-get_SQI = function(MCD, wCV, rstPct=20, obsPct=50, cutoff=3) {
+get_SOI = function(MCD, wCV, rstPct=20, obsPct=50, cutoff=3) {
 
   auc.coord <- na.omit(data.frame(Gene=rep(rownames(MCD), ncol(MCD)),
                                   Sample=rep(colnames(MCD), each=nrow(MCD)),
@@ -573,7 +793,7 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50, cutoff=3) {
     group_by(Sample) %>%
     summarise(AUC=DescTools::AUC(x, y, method="spline")) %>% # calculate AUC
     mutate(PD=SCISSOR::pd.rate.hy(AUC, qrsc=TRUE), # projection depth
-           SQI=ifelse(PD>cutoff, "Suboptimal", "Optimal")) # outlier detection
+           SOI=ifelse(PD>cutoff, "Suboptimal", "Optimal")) # outlier detection
 
   auc.coord <- smoothData %>%
     select(x, y, Sample) %>%
@@ -583,24 +803,24 @@ get_SQI = function(MCD, wCV, rstPct=20, obsPct=50, cutoff=3) {
 }
 
 
-#' Plot sample quality index (SQI) outputs
+#' Plot suboptimal/optimal (SOI) outputs
 #'
-#' @param SQIresult outputs from get_SQI function
-#' @return figures for the distribution of SQI by PD; and the relation of wCV and MCD.
+#' @param SOIresult outputs from get_SOI function
+#' @return figures for the distribution of SOI by PD; and the relation of wCV and MCD.
 #' @references https://jtr13.github.io/cc21fall2/raincloud-plot-101-density-plot-or-boxplotwhy-not-do-both.html
-#' @import ggplot2 tidyverse dplyr scales tibble ggpubr
+#' @import ggplot2 dplyr scales tibble ggpubr
 #' @export
 
-plot_SQI = function(SQIresult, cutoff=3) {
+plot_SOI = function(SOIresult, cutoff=3) {
 
-  auc.vec2 <- result$auc.vec[, c("AUC", "PD")]
-  auc.coord <- result$auc.coord
-  rangeMCD <- result$rangeMCD
+  auc.vec2 <- SOIresult$auc.vec[, c("AUC", "PD")]
+  auc.coord <- SOIresult$auc.coord
+  rangeMCD <- SOIresult$rangeMCD
   df <- data.frame(var=rep(colnames(auc.vec2), each=nrow(auc.vec2)),
                    value=as.vector(as.matrix(auc.vec2)))
   df$var <- factor(df$var, levels=rev(colnames(auc.vec2)), ordered=TRUE)
 
-  # Distribution of PD by SQI
+  # Distribution of PD by SOI
   d <- df %>%
     ggplot2::ggplot(aes(x=var, y=value, fill=var)) +
     geom_flat_violin(position=position_nudge(x=0.2), alpha=0.4) +
@@ -622,11 +842,11 @@ plot_SQI = function(SQIresult, cutoff=3) {
     coord_flip()
 
   # Relation of wCV and MCD
-  auc.coord$SQI <- factor(auc.coord$SQI, levels=c("Suboptimal", "Optimal"))
+  auc.coord$SOI <- factor(auc.coord$SOI, levels=c("Suboptimal", "Optimal"))
 
-  p <- ggplot2::ggplot(auc.coord, aes(x=x, y=y, group=Sample, color=SQI)) +
+  p <- ggplot2::ggplot(auc.coord, aes(x=x, y=y, group=Sample, color=SOI)) +
     geom_line(size=1) +
-    scale_color_manual(values=c("Suboptimal"=scales::alpha("red", 0.5), "Optimal"=scales::alpha("darkgreen", 0.5))) + # SQI per sample
+    scale_color_manual(values=c("Suboptimal"=scales::alpha("red", 0.5), "Optimal"=scales::alpha("darkgreen", 0.5))) + # SOI per sample
     geom_rect(data=tibble::tibble(x1=rangeMCD[1], x2=rangeMCD[2], y1=-Inf, y2=+Inf),
               inherit.aes=FALSE,
               mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2),
