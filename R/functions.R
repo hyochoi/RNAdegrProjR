@@ -500,7 +500,7 @@ get_decayRate = function(genelist, pileupPath, sampleInfo, cases=NULL, nCores=32
 #' @import dendextend dplyr
 #' @export
 
-get_DII = function(DR, topPct=5) {
+get_DIIhc = function(DR, topPct=5) {
 
   degrateGrp <- ifelse(DR.mat>=quantile(DR.mat, 1-topPct/100), 1, 0)
   hc_columns <- hclust(dist(t(degrateGrp), method="manhattan"), method="ward.D")
@@ -509,10 +509,22 @@ get_DII = function(DR, topPct=5) {
   dend_columns <- as.dendrogram(hc_columns)
 
   hd.vec <- data.frame(Sample=hc_columns$labels,
-                       Cluster=dendextend::cutree(dend_columns, k=2)) %>%
-    mutate(DII=ifelse(Cluster==1, "Intact", "Degraded"))
+                       Cluster=dendextend::cutree(dend_columns, k=2),
+                       Order=hc_columns$order,
+                       ColSums=colSums(degrateGrp))
 
-  return(list(degrateGrp=degrateGrp, hc_columns=hc_columns, hd.vec=hd.vec))
+  # Define index by meanSum
+  cluster_means <- hd.vec %>%
+    group_by(Cluster) %>%
+    summarise(meanSum=mean(ColSums), .groups="drop") %>%
+    arrange(desc(meanSum)) %>%
+    mutate(DII=c("Degraded", "Intact")) # Degraded if meanSum is greater
+
+  hd.vec <- hd.vec %>%
+    left_join(cluster_means, by="Cluster") %>%
+    select(Sample, Cluster, Order, ColSums, DII)
+
+  return(list(degrateGrp=degrateGrp, hc_columns=hc_columns, hd.vec=hd.vec, cluster_means=cluster_means))
 }
 
 
@@ -527,16 +539,26 @@ get_DII = function(DR, topPct=5) {
 #' @import ComplexHeatmap magick grid
 #' @export
 
-plot_DII = function(DIIresult, DR, topPct=5, outFile) {
+plot_DIIhc = function(DIIresult, DR, topPct=5, outFile) {
 
   degrateGrp <- DIIresult$degrateGrp
   hc_columns <- DIIresult$hc_columns
+  hd.vec <- DIIresult$hd.vec
+  cluster_means <- DIIresult$cluster_means
 
   # degrateGrp
   col_id = c("0"="papayawhip", "1"="tan4")
 
+  # Color mapping by index
+  cluster_color_map <- cluster_means %>%
+    mutate(color=ifelse(DII=="Degraded", "#7C3F11", "mediumaquamarine"))
+  color_vec <- setNames(cluster_color_map$color, cluster_color_map$Cluster)
+
   # Cut the dendrogram into clusters and color them with custom colors
-  dend_columns <- dendextend::color_branches(as.dendrogram(hc_columns), k=2, col=c("mediumaquamarine", "#7C3F11"))
+  dend_columns <- dendextend::color_branches(as.dendrogram(hc_columns), k=2, col=color_vec)
+
+  # Set the order for column_title
+  dii_levels <- c("Degraded", "Intact")
 
   # Create the heatmap with custom dendrograms
   hm.degrate <- Heatmap(degrateGrp, name="Degrate", col=col_id,
@@ -544,7 +566,8 @@ plot_DII = function(DIIresult, DR, topPct=5, outFile) {
                         column_split=2,
                         column_dend_height=unit(1.5, "cm"),
                         show_column_dend=TRUE, show_column_names=FALSE,
-                        column_title=c("Intact", "Degraded"), column_title_gp=gpar(fontsize=18),
+                        column_title=dii_levels,
+                        column_title_gp=gpar(fontsize=18),
                         column_gap=unit(5, "mm"),
                         cluster_rows=FALSE,
                         show_row_dend=FALSE, show_row_names=FALSE,
@@ -632,10 +655,10 @@ plot_DII = function(DIIresult, DR, topPct=5, outFile) {
   ))
 
   draw(hm.degrate, newpage=FALSE)
-  grid.text("DII",
-            x=unit(0.58, "npc"),
-            y=unit(0.8, "npc"),
-            gp=gpar(fontsize=18, fontface="bold"))
+  # grid.text("DII",
+  #           x=unit(0.58, "npc"),
+  #           y=unit(0.8, "npc"),
+  #           gp=gpar(fontsize=18, fontface="bold"))
 
   pushViewport(viewport(
     x=unit(0.5, "npc"),
@@ -808,7 +831,7 @@ get_SOI = function(MCD, wCV, rstPct=20, obsPct=50, cutoff=3) {
 #' @param SOIresult outputs from get_SOI function
 #' @return figures for the distribution of SOI by PD; and the relation of wCV and MCD.
 #' @references https://jtr13.github.io/cc21fall2/raincloud-plot-101-density-plot-or-boxplotwhy-not-do-both.html
-#' @import ggplot2 dplyr scales tibble ggpubr
+#' @import ggplot2 dplyr scales tibble ggpubr PupillometryR
 #' @export
 
 plot_SOI = function(SOIresult, cutoff=3) {
@@ -823,7 +846,7 @@ plot_SOI = function(SOIresult, cutoff=3) {
   # Distribution of PD by SOI
   d <- df %>%
     ggplot2::ggplot(aes(x=var, y=value, fill=var)) +
-    geom_flat_violin(position=position_nudge(x=0.2), alpha=0.4) +
+    PupillometryR::geom_flat_violin(position=position_nudge(x=0.2), alpha=0.4) +
     geom_point(aes(color=case_when(
       var=="AUC" ~ "grey",
       var=="PD" & value>cutoff ~ "red",
